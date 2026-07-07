@@ -17,6 +17,7 @@
   --gold-deep: #8c7241;
   --font-display: 'Cormorant Garamond', 'Bodoni Moda', Didot, 'Times New Roman', serif;
   --font-luxury: 'Bodoni Moda', 'Bodoni 72', Didot, 'Times New Roman', serif;
+  --font-hero: 'Marcellus', 'Cormorant Garamond', Didot, 'Times New Roman', serif;
   --font-body: 'Inter', system-ui, -apple-system, 'Segoe UI', sans-serif;
   --font-label: 'Inter', system-ui, -apple-system, 'Segoe UI', sans-serif;
   --radius: 18px;
@@ -224,41 +225,27 @@ button { font-family: inherit; cursor: pointer; }
   min-height: 600px;
   overflow: hidden;
   isolation: isolate;
+  background: #0a0f1c;
 }
 .hero__media { position: absolute; inset: 0; z-index: 0; }
-.hero__poster, .hero__video {
+.hero__poster {
   position: absolute; inset: 0;
   width: 100%; height: 100%;
   object-fit: cover;
-  object-position: 50% 42%;
-  will-change: transform, opacity;
+  object-position: 50% 50%;
 }
-.hero__poster {
-  z-index: 1;
-  animation: heroKen 20s ease-in-out infinite alternate;
-}
-.hero__video {
-  z-index: 2;
-  opacity: 0;
-  transition: opacity 1.1s var(--ease-lux);
-}
-.hero__video.is-playing { opacity: 1; }
+.hero__poster { z-index: 1; }
 .hero__poster--tall { display: none; }
-@keyframes heroKen {
-  from { transform: scale(1.04); }
-  to   { transform: scale(1.13); }
-}
+/* desktop keeps the glow (no dark overlay); mobile sets its own mask below.
+   Text stays legible via its own text-shadow + sitting over the darker sky. */
 .hero__shade {
   position: absolute; inset: 0; z-index: 3; pointer-events: none;
-  background:
-    linear-gradient(180deg, rgba(6,10,18,.52) 0%, rgba(6,10,18,.10) 18%, rgba(6,10,18,0) 40%, rgba(6,10,18,.34) 72%, rgba(4,7,13,.82) 100%),
-    radial-gradient(120% 90% at 50% 40%, rgba(6,10,18,0) 52%, rgba(6,10,18,.36) 100%);
 }
 .hero__inner {
   position: absolute; inset: 0; z-index: 4;
-  width: min(1400px, 92vw); margin-inline: auto; left: 0; right: 0;
+  width: min(1620px, 96vw); margin-inline: auto; left: 0; right: 0;
   display: flex; justify-content: space-between; align-items: flex-end; gap: 28px;
-  padding-bottom: clamp(118px, 21vh, 220px);
+  padding-bottom: clamp(210px, 48vh, 470px);
   padding-top: var(--nav-h-hero);
   color: #fff; pointer-events: none;
 }
@@ -275,14 +262,19 @@ button { font-family: inherit; cursor: pointer; }
   color: rgba(255,255,255,.9);
 }
 .hero__title {
-  margin: 0; font-family: var(--font-display); font-weight: 500;
-  font-size: clamp(38px, 5.4vw, 80px); line-height: .96; letter-spacing: .02em;
+  margin: 0; font-family: var(--font-hero); font-weight: 400;
+  font-size: clamp(36px, 5.0vw, 74px); line-height: 1.0; letter-spacing: .06em;
   text-transform: uppercase; color: #fff;
   text-shadow: 0 2px 34px rgba(0,0,0,.5);
 }
 .hero__title span {
-  display: block; font-size: .46em; letter-spacing: .1em; font-weight: 500;
-  margin-top: .34em; color: rgba(255,255,255,.94);
+  display: block; font-size: .46em; letter-spacing: .16em; font-weight: 400;
+  margin-top: .4em; color: rgba(255,255,255,.94);
+}
+.hero__title span.hero__title-loc {
+  font-family: var(--font-label);
+  font-size: 13px; font-weight: 600; letter-spacing: .3em; text-transform: uppercase;
+  margin-top: 1.4em; color: rgba(255,255,255,.9);
 }
 .hero__rule {
   display: block; width: 68px; height: 1px; margin: clamp(18px, 2.4vw, 30px) 0;
@@ -290,19 +282,20 @@ button { font-family: inherit; cursor: pointer; }
 }
 .hero__col--right .hero__rule { background: linear-gradient(270deg, var(--gold-2), rgba(255,255,255,.14)); }
 .hero__note {
-  margin: 0; font-family: var(--font-display); font-weight: 500;
-  font-size: clamp(21px, 2.5vw, 36px); letter-spacing: .04em; color: #fff;
+  margin: 0; font-family: var(--font-hero); font-weight: 400;
+  font-size: clamp(21px, 2.5vw, 36px); letter-spacing: .06em; color: #fff;
 }
 .hero__price {
   margin: 12px 0 0; font-family: var(--font-label);
-  font-size: 13px; font-weight: 600; letter-spacing: .2em; text-transform: uppercase; color: var(--gold-2);
+  font-size: 13px; font-weight: 600; letter-spacing: .2em; text-transform: uppercase; color: #f3e7c4;
+  text-shadow: 0 1px 2px rgba(4,7,13,.95), 0 2px 12px rgba(4,7,13,.9), 0 0 34px rgba(4,7,13,.75);
 }
 .hero__price sup { font-size: .66em; top: -.5em; }
 .hero__price--sub { color: rgba(255,255,255,.72); letter-spacing: .16em; }
 .hero__figs { display: flex; gap: clamp(30px, 4vw, 60px); }
 .hero__fig { display: flex; flex-direction: column; align-items: flex-end; }
 .hero__fig-num {
-  font-family: var(--font-display); font-weight: 500; line-height: .88;
+  font-family: var(--font-hero); font-weight: 400; line-height: .92;
   font-size: clamp(44px, 5.4vw, 78px); color: #fff;
 }
 .hero__fig-label {
@@ -330,6 +323,22 @@ button { font-family: inherit; cursor: pointer; }
 @keyframes heroFadeIn { to { opacity: 1; } }
 @keyframes heroBob { 0%,100% { transform: translateY(0); } 50% { transform: translateY(3px); } }
 
+@media (max-width: 1440px) {
+  .hero__inner {
+    width: 98vw;
+    padding-bottom: clamp(180px, 44vh, 380px);
+  }
+  .hero__title {
+    font-size: clamp(30px, 4.2vw, 58px);
+  }
+  .hero__fig-num {
+    font-size: clamp(36px, 4.8vw, 62px);
+  }
+  .hero__note {
+    font-size: clamp(16px, 2.0vw, 28px);
+  }
+}
+
 @media (max-width: 860px) {
   .hero__inner {
     flex-direction: column; justify-content: flex-end; align-items: flex-start;
@@ -339,10 +348,35 @@ button { font-family: inherit; cursor: pointer; }
   .hero__title { font-size: clamp(34px, 11vw, 60px); }
 }
 @media (max-width: 640px) {
-  .hero__explore { bottom: 26px; padding: 13px 24px; font-size: 11px; letter-spacing: .14em; }
-  .hero__poster, .hero__video { object-position: 50% 42%; }
+  .hero__explore { display: none; }
+  /* backdrop matched to the image's OWN blue-indigo sky (#232e61) so the join
+     above the towers is invisible, then falls to black for the mask */
+  .hero { background: linear-gradient(180deg, #1e2856 0%, #232e61 14%, #171d3a 48%, #0a0c1a 76%, #05060e 100%); }
   .hero__poster--wide { display: none; }
-  .hero__poster--tall { display: block; }
+  /* crop is already centered on the towers -> contain + scale keeps both towers
+     centred H+V and a touch larger, letterbox filled by the .hero backdrop */
+  .hero__poster--tall {
+    display: block;
+    object-fit: contain;
+    object-position: 50% 50%;
+    transform: scale(1.3);
+    transform-origin: 50% 46%;
+  }
+  /* mask stays clear over the towers; darkening begins at the tree line (~74%)
+     below the towers, so the towers keep their full glow */
+  .hero__shade {
+    display: block;
+    background: linear-gradient(180deg,
+      rgba(6,10,18,0) 73%,
+      rgba(6,10,18,.5) 83%,
+      rgba(5,7,14,.92) 93%,
+      #04060d 100%);
+  }
+  /* strip to essentials: highlight location + price, drop the rest */
+  .hero__note { display: none; }
+  .hero__title { font-size: clamp(30px, 9vw, 46px); }
+  /* button is gone -> text lower, plus breathing room from the left edge */
+  .hero__inner { width: 100%; padding-inline: 30px; padding-bottom: clamp(34px, 6vh, 56px); }
 }
 
 /* ---------- intro (cream) ---------- */
@@ -1200,6 +1234,16 @@ button { font-family: inherit; cursor: pointer; }
   border-radius: var(--radius);
   -webkit-overflow-scrolling: touch;
   overscroll-behavior-x: contain;
+  cursor: grab;
+  user-select: none; -webkit-user-select: none;
+}
+.welcome__track.is-dragging {
+  cursor: grabbing;
+  scroll-snap-type: none;
+  scroll-behavior: auto;
+}
+.welcome__track.is-dragging .welcome__slide {
+  pointer-events: none;
 }
 .welcome__track::-webkit-scrollbar { display: none; }
 .welcome__slide {
@@ -1307,11 +1351,12 @@ button { font-family: inherit; cursor: pointer; }
 .res-selector__copy {
   position: absolute;
   top: calc(var(--nav-h) + clamp(34px, 10svh, 96px));
-  width: min(460px, calc(100% - 44px));
-  height: 190px;
+  width: clamp(260px, 24vw, 420px);
+  height: auto;
+  min-height: 120px;
   z-index: 4;
   pointer-events: none;
-  padding: clamp(22px, 2.8vw, 34px);
+  padding: clamp(16px, 1.8vw, 28px);
   border: 1px solid rgba(255,255,255,.58);
   border-radius: 18px;
   background: rgba(255,255,255,.42);
@@ -1323,20 +1368,20 @@ button { font-family: inherit; cursor: pointer; }
   justify-content: center;
 }
 .res-selector__brand {
-  left: clamp(22px, 5vw, 78px);
+  left: clamp(16px, 3.5vw, 68px);
   align-items: center;
 }
 .res-selector__brand img {
-  width: clamp(200px, 20vw, 280px);
+  width: clamp(150px, 15vw, 240px);
   height: auto;
 }
 .res-selector__copy {
-  right: clamp(22px, 5vw, 78px);
+  right: clamp(16px, 3.5vw, 68px);
   text-align: left;
 }
 .units--selector .h-display {
   margin: 0;
-  font-size: clamp(20px, 2vw, 29px);
+  font-size: clamp(17px, 1.6vw, 26px);
   line-height: 1.32;
   text-align: left;
   color: var(--black);
@@ -1916,7 +1961,6 @@ body { letter-spacing: .002em; }
   .amenities__bg { transition: none; transform: none; }
   .amenities__card { transition: none; }
   .hero__poster { animation: none; transform: none; }
-  .hero__video { display: none; }
   .hero__col { animation: none; }
   .hero__explore { animation: none; opacity: 1; }
   .grand-copy::after,
@@ -1990,7 +2034,7 @@ body { letter-spacing: .002em; }
 @media (max-width: 640px) {
   body { font-size: 15px; }
   .nav__phone { display: none; }
-  .nav__brand img { height: 32px; }
+  .nav__brand img { height: 55px; }
   .hero__mark { gap: 18px; }
   .hero__logo-mask { padding: 6px 10px; border-radius: 18px; }
   .hero__tag { letter-spacing: .2em; line-height: 2; padding-inline: 10px; }

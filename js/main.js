@@ -52,35 +52,7 @@
   window.addEventListener("resize", () => window.requestAnimationFrame(updateNavState), { passive: true });
   updateNavState();
 
-  /* ---------- hero: still → 3-second clip → still, on a loop ---------- */
-  const heroVideo = $("#heroVideo");
-  if (heroVideo && !reduced) {
-    const HOLD = 2600; // ms resting on the elevation still between plays
-    let timer = null, started = false, inView = true;
-    const playClip = () => {
-      clearTimeout(timer);
-      if (!inView) return;
-      try { heroVideo.currentTime = 0; } catch (_) {}
-      heroVideo.classList.add("is-playing");
-      const p = heroVideo.play();
-      if (p && p.catch) p.catch(() => heroVideo.classList.remove("is-playing"));
-    };
-    const restThenReplay = () => {
-      heroVideo.classList.remove("is-playing"); // crossfade back to the poster still
-      heroVideo.pause();
-      clearTimeout(timer);
-      timer = setTimeout(playClip, HOLD);
-    };
-    heroVideo.addEventListener("ended", restThenReplay);
-    const start = () => { if (started) return; started = true; timer = setTimeout(playClip, 900); };
-    if (heroVideo.readyState >= 2) start();
-    else heroVideo.addEventListener("loadeddata", start, { once: true });
-    new IntersectionObserver((ents) => ents.forEach((e) => {
-      inView = e.isIntersecting;
-      if (!inView) { clearTimeout(timer); heroVideo.pause(); heroVideo.classList.remove("is-playing"); }
-      else if (started) { clearTimeout(timer); timer = setTimeout(playClip, 500); }
-    }), { threshold: 0.12 }).observe(heroVideo);
-  }
+  /* ---------- hero: static elevation still (Ken Burns drift via CSS) ---------- */
 
   /* ---------- reveal on scroll ---------- */
   const io = new IntersectionObserver(
@@ -346,6 +318,12 @@
     const GAP = 18;
     const step = () => wTrack.clientWidth + GAP;
     let current = 0;
+    
+    let isDown = false;
+    let startX;
+    let scrollLeftVal;
+    let hasMoved = false;
+
     const go = (i) => {
       current = clamp(i, 0, slides.length - 1);
       wTrack.scrollTo({ left: current * step(), behavior: "smooth" });
@@ -353,15 +331,74 @@
     $("#welcomePrev").addEventListener("click", () => go(current - 1));
     $("#welcomeNext").addEventListener("click", () => go(current + 1));
     dots.forEach((d, i) => d.addEventListener("click", () => go(i)));
+    
     // dots track the animation live; `current` commits once scrolling settles
     // so rapid clicks aren't reset by in-flight smooth scrolling
     let settle;
     wTrack.addEventListener("scroll", () => {
+      if (isDown) return;
       const i = clamp(Math.round(wTrack.scrollLeft / step()), 0, slides.length - 1);
       dots.forEach((d, j) => d.classList.toggle("is-active", j === i));
       clearTimeout(settle);
       settle = setTimeout(() => { current = i; }, 90);
     }, { passive: true });
+
+    /* Drag to scroll (desktop mouse drag) */
+    wTrack.addEventListener("mousedown", (e) => {
+      isDown = true;
+      hasMoved = false;
+      wTrack.style.scrollSnapType = "none";
+      wTrack.style.scrollBehavior = "auto";
+      wTrack.classList.add("is-dragging");
+      startX = e.pageX - wTrack.offsetLeft;
+      scrollLeftVal = wTrack.scrollLeft;
+    });
+
+    wTrack.addEventListener("mouseleave", () => {
+      if (isDown) endDrag();
+    });
+
+    wTrack.addEventListener("mouseup", () => {
+      if (isDown) endDrag();
+    });
+
+    wTrack.addEventListener("mousemove", (e) => {
+      if (!isDown) return;
+      e.preventDefault();
+      const x = e.pageX - wTrack.offsetLeft;
+      const walk = (x - startX) * 1.5; // Drag sensitivity multiplier
+      if (Math.abs(walk) > 5) {
+        hasMoved = true;
+      }
+      wTrack.scrollLeft = scrollLeftVal - walk;
+    });
+
+    // Disable default browser image/link drag behavior inside the track
+    wTrack.addEventListener("dragstart", (e) => {
+      e.preventDefault();
+    });
+
+    // Prevent clicks when dragging
+    wTrack.addEventListener("click", (e) => {
+      if (hasMoved) {
+        e.preventDefault();
+        e.stopPropagation();
+      }
+    }, true);
+
+    const endDrag = () => {
+      isDown = false;
+      wTrack.classList.remove("is-dragging");
+      wTrack.style.scrollSnapType = "";
+      wTrack.style.scrollBehavior = "";
+      
+      const i = clamp(Math.round(wTrack.scrollLeft / step()), 0, slides.length - 1);
+      go(i);
+      
+      // Update dots immediately on drag end
+      dots.forEach((d, j) => d.classList.toggle("is-active", j === i));
+      current = i;
+    };
   }
 
   /* ---------- amenities carousel (one slide per category, 1:1) ---------- */
