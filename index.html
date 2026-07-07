@@ -12,16 +12,17 @@
   <link rel="icon" type="image/png" href="assets/images/favicon.png">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Bodoni+Moda:opsz,wght@6..96,400;6..96,500;6..96,600&family=Michroma&family=Roboto:wght@300;400;500&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Bodoni+Moda:opsz,wght@6..96,400;6..96,500;6..96,600;6..96,700&family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="css/style.css">
 </head>
 <body>
 
   <!-- ======= NAVIGATION (frosted) ======= -->
-  <header class="nav" id="nav">
+  <header class="nav" id="nav" data-nav-theme="light">
     <div class="nav__inner">
       <a href="#top" class="nav__brand" aria-label="Jayabheri The Pinnacle — home">
-        <img src="assets/images/jaya-logo.webp" alt="Jayabheri The Pinnacle">
+        <img src="assets/images/jaya-logo.webp" alt="Jayabheri The Pinnacle" class="nav__logo nav__logo--dark">
+        <img src="assets/images/f-logo.webp" alt="" aria-hidden="true" class="nav__logo nav__logo--light">
       </a>
       <nav class="nav__links" aria-label="Primary">
         <a href="#overview">Overview</a>
@@ -32,6 +33,7 @@
         <a href="#faq">FAQ</a>
       </nav>
       <div class="nav__actions">
+        <button class="nav__cta" data-open-enquiry>Enquire Now</button>
         <button class="nav__burger" id="navBurger" aria-label="Open menu" aria-expanded="false">
           <span></span><span></span><span></span>
         </button>
@@ -57,19 +59,40 @@
   </div>
 
   <!-- ======= HERO ======= -->
-  <section class="hero" id="top">
-    <video class="hero__media" autoplay muted loop playsinline preload="auto" poster="assets/images/stills/sunset-orr.jpg">
-      <source src="assets/video/hero.mp4" type="video/mp4">
-    </video>
+  <section class="hero" id="top" data-nav-theme="light">
+    <div class="hero__media">
+      <img class="hero__poster hero__poster--wide" src="assets/images/stills/hero-towers.jpg" alt="Jayabheri The Pinnacle twin towers at dusk" fetchpriority="high">
+      <img class="hero__poster hero__poster--tall" src="assets/images/stills/hero-mobile.jpg" alt="" aria-hidden="true">
+      <video class="hero__video" id="heroVideo" muted playsinline preload="auto" poster="assets/images/stills/hero-towers.jpg" aria-hidden="true">
+        <source src="assets/video/hero-mobile.mp4" media="(max-width: 640px)" type="video/mp4">
+        <source src="assets/video/hero.mp4" type="video/mp4">
+      </video>
+    </div>
     <div class="hero__shade"></div>
-    <div class="hero__content">
-      <div class="hero__mark">
-        <span class="hero__logo-mask">
-          <img src="assets/images/f-logo.webp" alt="Jayabheri The Pinnacle" class="hero__logo">
-        </span>
-        <p class="hero__tag">Sky residences above the Financial District</p>
+
+    <div class="hero__inner">
+      <div class="hero__col hero__col--left">
+        <p class="hero__eyebrow">Kokapet · Hyderabad</p>
+        <h1 class="hero__title">3.5 &amp; 4.5 BHK<span>Sky Residences</span></h1>
+        <span class="hero__rule"></span>
+        <p class="hero__note">3,587 – 4,622 Sq Ft</p>
+        <p class="hero__price">₹5.25 Cr<sup>*</sup> Onwards</p>
+      </div>
+      <div class="hero__col hero__col--right">
+        <div class="hero__figs">
+          <div class="hero__fig"><span class="hero__fig-num">02</span><span class="hero__fig-label">Towers</span></div>
+          <div class="hero__fig"><span class="hero__fig-num">55</span><span class="hero__fig-label">Floors</span></div>
+        </div>
+        <span class="hero__rule"></span>
+        <p class="hero__note">75,000+ Sq Ft</p>
+        <p class="hero__price hero__price--sub">Clubhouse · Skydeck · Amenities</p>
       </div>
     </div>
+
+    <a href="#units" class="hero__explore">
+      <span>Explore The Residences</span>
+      <svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M12 5v14M6 13l6 6 6-6"/></svg>
+    </a>
   </section>
 
   <main>
@@ -85,22 +108,22 @@
           <div class="intro__stats intro__stats--left reveal d-1">
             <div class="intro-stat">
               <span class="intro-stat__label">Total area</span>
-              <span class="intro-stat__value">4.75</span>
+              <span class="intro-stat__value" data-count="4.75" data-decimals="2">4.75</span>
               <span class="intro-stat__unit">Acres</span>
             </div>
             <div class="intro-stat">
               <span class="intro-stat__label">Towers</span>
-              <span class="intro-stat__value">02</span>
+              <span class="intro-stat__value" data-count="2" data-pad="2">02</span>
               <span class="intro-stat__unit">High-rise towers</span>
             </div>
             <div class="intro-stat">
               <span class="intro-stat__label">Floors</span>
-              <span class="intro-stat__value">55</span>
+              <span class="intro-stat__value" data-count="55">55</span>
               <span class="intro-stat__unit">Per tower</span>
             </div>
             <div class="intro-stat">
               <span class="intro-stat__label">Tower amenities</span>
-              <span class="intro-stat__value">75,000</span>
+              <span class="intro-stat__value" data-count="75000">75,000</span>
               <span class="intro-stat__unit">Sq ft</span>
             </div>
           </div>
@@ -110,12 +133,12 @@
           <div class="intro__stats intro__stats--right reveal d-1">
             <div class="intro-stat">
               <span class="intro-stat__label">Total units</span>
-              <span class="intro-stat__value">425</span>
+              <span class="intro-stat__value" data-count="425">425</span>
               <span class="intro-stat__unit">Vaastu-compliant homes</span>
             </div>
             <div class="intro-stat">
               <span class="intro-stat__label">Homes per floor</span>
-              <span class="intro-stat__value">04</span>
+              <span class="intro-stat__value" data-count="4" data-pad="2">04</span>
               <span class="intro-stat__unit">Private sky residences</span>
             </div>
             <div class="intro-stat intro-stat--home-sizes">
@@ -212,48 +235,21 @@
     </section>
 
     <!-- ======= AMENITIES ======= -->
-    <section class="amenities" id="amenities">
+    <section class="amenities" id="amenities" data-nav-theme="light">
       <!-- Overlay Header -->
       <div class="amenities__header container">
         <p class="eyebrow eyebrow--center reveal">Everything, within the community</p>
         <h2 class="h-display h-display--center reveal" style="color: #ffffff;">A World of Amenities</h2>
         <ul class="am-icons reveal d-1" id="amenityButtons">
-          <li class="am-icon-btn is-active" data-group="The Club" data-slide-index="0">
-            <img src="assets/images/clubhouse/icons/sofa.png" alt="">
-            <span>The Club</span>
-          </li>
-          <li class="am-icon-btn" data-group="Infinity Pool" data-slide-index="2">
-            <img src="assets/images/clubhouse/icons/pool.png" alt="">
-            <span>Infinity Pool</span>
-          </li>
-          <li class="am-icon-btn" data-group="Fitness Studio" data-slide-index="4">
-            <img src="assets/images/clubhouse/icons/gym.png" alt="">
-            <span>Fitness Studio</span>
-          </li>
-          <li class="am-icon-btn" data-group="Spa" data-slide-index="6">
-            <img src="assets/images/clubhouse/icons/spa.png" alt="">
-            <span>Spa</span>
-          </li>
-          <li class="am-icon-btn" data-group="Mini Theatre" data-slide-index="7">
-            <img src="assets/images/clubhouse/icons/theatre.png" alt="">
-            <span>Mini Theatre</span>
-          </li>
-          <li class="am-icon-btn" data-group="Sports Zone" data-slide-index="8">
-            <img src="assets/images/clubhouse/icons/sports.png" alt="">
-            <span>Sports Zone</span>
-          </li>
-          <li class="am-icon-btn" data-group="Party Hall" data-slide-index="10">
-            <img src="assets/images/clubhouse/icons/party.png" alt="">
-            <span>Party Hall</span>
-          </li>
-          <li class="am-icon-btn" data-group="Cafeteria" data-slide-index="11">
-            <img src="assets/images/clubhouse/icons/cafe.png" alt="">
-            <span>Cafeteria</span>
-          </li>
-          <li class="am-icon-btn" data-group="Guest Suites" data-slide-index="12">
-            <img src="assets/images/clubhouse/icons/bed.png" alt="">
-            <span>Guest Suites</span>
-          </li>
+          <li class="am-icon-btn is-active" data-index="0"><img src="assets/images/clubhouse/icons/sofa.png" alt=""><span>The Club</span></li>
+          <li class="am-icon-btn" data-index="1"><img src="assets/images/clubhouse/icons/pool.png" alt=""><span>Infinity Pool</span></li>
+          <li class="am-icon-btn" data-index="2"><img src="assets/images/clubhouse/icons/gym.png" alt=""><span>Fitness Studio</span></li>
+          <li class="am-icon-btn" data-index="3"><img src="assets/images/clubhouse/icons/spa.png" alt=""><span>Spa</span></li>
+          <li class="am-icon-btn" data-index="4"><img src="assets/images/clubhouse/icons/theatre.png" alt=""><span>Mini Theatre</span></li>
+          <li class="am-icon-btn" data-index="5"><img src="assets/images/clubhouse/icons/sports.png" alt=""><span>Sports Zone</span></li>
+          <li class="am-icon-btn" data-index="6"><img src="assets/images/clubhouse/icons/party.png" alt=""><span>Party Hall</span></li>
+          <li class="am-icon-btn" data-index="7"><img src="assets/images/clubhouse/icons/cafe.png" alt=""><span>Cafeteria</span></li>
+          <li class="am-icon-btn" data-index="8"><img src="assets/images/clubhouse/icons/bed.png" alt=""><span>Guest Suites</span></li>
         </ul>
       </div>
 
@@ -271,16 +267,6 @@
             </div>
           </div>
 
-          <!-- Slide 1: The Club (Lounge) -->
-          <div class="amenities__slide" data-index="1" data-group="The Club">
-            <img src="assets/images/clubhouse/lounge.webp" alt="Grand Lounge" class="amenities__bg" loading="lazy">
-            <div class="amenities__card">
-              <span class="amenities__card-kicker">The Clubhouse</span>
-              <h3 class="amenities__card-title">The Grand Lounge</h3>
-              <p class="amenities__card-desc">Elegant social spaces designed for casual conversations, private meetings, or quiet contemplation in a sophisticated setting.</p>
-            </div>
-          </div>
-
           <!-- Slide 2: Infinity Pool (Day) -->
           <div class="amenities__slide" data-index="2" data-group="Infinity Pool">
             <img src="assets/images/clubhouse/pool.webp" alt="Infinity Pool Day" class="amenities__bg" loading="lazy">
@@ -291,33 +277,13 @@
             </div>
           </div>
 
-          <!-- Slide 3: Infinity Pool (Dusk) -->
-          <div class="amenities__slide" data-index="3" data-group="Infinity Pool">
-            <img src="assets/images/stills/pool-dusk.jpg" alt="Infinity Pool Dusk" class="amenities__bg" loading="lazy">
-            <div class="amenities__card">
-              <span class="amenities__card-kicker">Infinity Pool</span>
-              <h3 class="amenities__card-title">Poolside Serenity</h3>
-              <p class="amenities__card-desc">As the sun sets over Kokapet, the illuminated pool deck transforms into an oasis of calm and luxury.</p>
-            </div>
-          </div>
-
           <!-- Slide 4: Fitness Studio (Gym) -->
           <div class="amenities__slide" data-index="4" data-group="Fitness Studio">
             <img src="assets/images/clubhouse/gym.webp" alt="Fitness Studio Gym" class="amenities__bg" loading="lazy">
             <div class="amenities__card">
               <span class="amenities__card-kicker">Fitness Studio</span>
               <h3 class="amenities__card-title">State-of-the-Art Gym</h3>
-              <p class="amenities__card-desc">Equipped with the finest strength training and cardio machinery to ensure your wellness journey is elite.</p>
-            </div>
-          </div>
-
-          <!-- Slide 5: Fitness Studio (Yoga) -->
-          <div class="amenities__slide" data-index="5" data-group="Fitness Studio">
-            <img src="assets/images/clubhouse/yoga.webp" alt="Yoga Deck" class="amenities__bg" loading="lazy">
-            <div class="amenities__card">
-              <span class="amenities__card-kicker">Fitness Studio</span>
-              <h3 class="amenities__card-title">Yoga & Meditation Deck</h3>
-              <p class="amenities__card-desc">Find your inner peace and balance in a serene, naturally lit space looking out onto lush podium vistas.</p>
+              <p class="amenities__card-desc">The finest strength and cardio equipment, paired with a naturally lit yoga and meditation deck overlooking the podium gardens.</p>
             </div>
           </div>
 
@@ -347,17 +313,7 @@
             <div class="amenities__card">
               <span class="amenities__card-kicker">Sports Zone</span>
               <h3 class="amenities__card-title">Active Sports Courts</h3>
-              <p class="amenities__card-desc">Tennis and volleyball courts, cricket practice nets, and running tracks for the sport enthusiasts in the family.</p>
-            </div>
-          </div>
-
-          <!-- Slide 9: Sports Zone (Indoor Games) -->
-          <div class="amenities__slide" data-index="9" data-group="Sports Zone">
-            <img src="assets/images/clubhouse/indoor-games.webp" alt="Indoor Games" class="amenities__bg" loading="lazy">
-            <div class="amenities__card">
-              <span class="amenities__card-kicker">Sports Zone</span>
-              <h3 class="amenities__card-title">Indoor Games Lounge</h3>
-              <p class="amenities__card-desc">Table tennis, billiards, foosball, and board games. A perfect indoor retreat for children and adults alike.</p>
+              <p class="amenities__card-desc">Tennis and volleyball courts, cricket nets and running tracks — plus an indoor games lounge with table tennis, billiards and foosball.</p>
             </div>
           </div>
 
@@ -393,16 +349,17 @@
 
         </div>
 
-        <!-- Carousel navigation arrows -->
-        <button class="amenities__btn amenities__btn--prev" id="amenitiesPrev" aria-label="Previous slide">
-          <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M19 12H5M11 18l-6-6 6-6"/></svg>
-        </button>
-        <button class="amenities__btn amenities__btn--next" id="amenitiesNext" aria-label="Next slide">
-          <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
-        </button>
-
-        <!-- Carousel indicators (dots) -->
-        <div class="amenities__dots" id="amenitiesDots"></div>
+        <!-- Controls: category stepper + counter + dots -->
+        <div class="amenities__controls">
+          <button class="amenities__btn amenities__btn--prev" id="amenitiesPrev" aria-label="Previous amenity">
+            <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M15 19l-7-7 7-7"/></svg>
+          </button>
+          <div class="amenities__counter" id="amenitiesCounter"><strong>01</strong><span>/ 09</span></div>
+          <button class="amenities__btn amenities__btn--next" id="amenitiesNext" aria-label="Next amenity">
+            <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M9 5l7 7-7 7"/></svg>
+          </button>
+          <div class="amenities__dots" id="amenitiesDots"></div>
+        </div>
       </div>
     </section>
 
@@ -420,7 +377,7 @@
     </section>
 
     <!-- ======= SELECT YOUR HOME (glass card band) ======= -->
-    <section class="select" style="background-image:url('assets/images/stills/facade.jpg'); background-position: 45% center;">
+    <section class="select" data-nav-theme="light" style="background-image:url('assets/images/stills/facade.jpg'); background-position: 45% center;">
       <div class="select__card reveal">
         <img src="assets/images/f-logo.webp" alt="" class="select__logo">
         <h2>Select your dream home</h2>
@@ -530,6 +487,14 @@
               <img src="assets/images/gallery/vollyball.webp" alt="Outdoor beach volleyball sports arena" loading="lazy">
               <div class="gallery__caption">Outdoor Sports Arena</div>
             </div>
+            <div class="gallery__slide">
+              <img src="assets/images/stills/amphitheatre.jpg" alt="Landscaped outdoor amphitheatre" loading="lazy">
+              <div class="gallery__caption">The Amphitheatre</div>
+            </div>
+            <div class="gallery__slide">
+              <img src="assets/images/stills/skyline.jpg" alt="City skyline framed by the towers" loading="lazy">
+              <div class="gallery__caption">Skyline Panorama</div>
+            </div>
           </div>
 
           <!-- Interior Track -->
@@ -581,6 +546,26 @@
             <div class="gallery__slide">
               <img src="assets/images/gallery/balcony.webp" alt="Apartment private panoramic view balcony" loading="lazy">
               <div class="gallery__caption">Panoramic View Balcony</div>
+            </div>
+            <div class="gallery__slide">
+              <img src="assets/images/tower/optimized/coworking-lobby.webp" alt="Co-working lounge within the tower" loading="lazy">
+              <div class="gallery__caption">Co-Working Lounge</div>
+            </div>
+            <div class="gallery__slide">
+              <img src="assets/images/tower/optimized/community-plaza.webp" alt="Sky community plaza" loading="lazy">
+              <div class="gallery__caption">Sky Community Plaza</div>
+            </div>
+            <div class="gallery__slide">
+              <img src="assets/images/tower/optimized/hobby-room.webp" alt="Residents hobby room" loading="lazy">
+              <div class="gallery__caption">Hobby Studio</div>
+            </div>
+            <div class="gallery__slide">
+              <img src="assets/images/tower/optimized/toddler-room.webp" alt="Children's toddler play room" loading="lazy">
+              <div class="gallery__caption">Toddler's Play Room</div>
+            </div>
+            <div class="gallery__slide">
+              <img src="assets/images/tower/optimized/elders-meeting-room.webp" alt="Elders lounge and meeting room" loading="lazy">
+              <div class="gallery__caption">Elders' Lounge</div>
             </div>
           </div>
 
@@ -693,7 +678,7 @@
                 </g>
               </g>
               <!-- area labels -->
-              <g font-family="Roboto, sans-serif" font-size="13" letter-spacing="2.2" fill="#a6a49e">
+              <g font-family="Inter, sans-serif" font-size="13" letter-spacing="2.2" fill="#a6a49e">
                 <text x="556" y="470">KOKAPET</text>
                 <text x="700" y="340">FINANCIAL DISTRICT</text>
                 <text x="430" y="524">NARSINGI</text>
@@ -711,7 +696,7 @@
                 <text x="128" y="418">GANDIPET</text>
                 <text x="330" y="712">HIMAYAT SAGAR</text>
               </g>
-              <text x="1180" y="470" font-family="Roboto, sans-serif" font-size="30" fill="#8f8d88">Hyderabad</text>
+              <text x="1180" y="470" font-family="Inter, sans-serif" font-size="30" fill="#8f8d88">Hyderabad</text>
 
               <!-- expanding radius -->
               <circle id="radiusCircle" cx="600" cy="430" r="40" fill="rgba(30,30,30,0.05)" stroke="rgba(30,30,30,0.22)" stroke-width="1.5"/>
@@ -721,54 +706,54 @@
               <g class="poi" data-ring="1" transform="translate(648,352)">
                 <rect x="0" y="0" width="150" height="30" rx="15" fill="#ffffff" filter="url(#pillShadow)"/>
                 <circle cx="17" cy="15" r="5.5" fill="none" stroke="#4a4a46" stroke-width="1.5"/><circle cx="17" cy="15" r="1.8" fill="#4a4a46"/>
-                <text x="32" y="19.5" font-family="Roboto, sans-serif" font-size="12.5" fill="#333">Financial District</text>
+                <text x="32" y="19.5" font-family="Inter, sans-serif" font-size="12.5" fill="#333">Financial District</text>
               </g>
               <g class="poi" data-ring="1" transform="translate(452,362)">
                 <rect x="0" y="0" width="122" height="30" rx="15" fill="#ffffff" filter="url(#pillShadow)"/>
                 <circle cx="17" cy="15" r="5.5" fill="none" stroke="#4a4a46" stroke-width="1.5"/><circle cx="17" cy="15" r="1.8" fill="#4a4a46"/>
-                <text x="32" y="19.5" font-family="Roboto, sans-serif" font-size="12.5" fill="#333">Wipro Circle</text>
+                <text x="32" y="19.5" font-family="Inter, sans-serif" font-size="12.5" fill="#333">Wipro Circle</text>
               </g>
               <g class="poi" data-ring="1" transform="translate(618,548)">
                 <rect x="0" y="0" width="164" height="30" rx="15" fill="#ffffff" filter="url(#pillShadow)"/>
                 <circle cx="17" cy="15" r="5.5" fill="none" stroke="#4a4a46" stroke-width="1.5"/><circle cx="17" cy="15" r="1.8" fill="#4a4a46"/>
-                <text x="32" y="19.5" font-family="Roboto, sans-serif" font-size="12.5" fill="#333">Neopolis · Kokapet</text>
+                <text x="32" y="19.5" font-family="Inter, sans-serif" font-size="12.5" fill="#333">Neopolis · Kokapet</text>
               </g>
               <g class="poi" data-ring="2" transform="translate(688,190)">
                 <rect x="0" y="0" width="176" height="30" rx="15" fill="#ffffff" filter="url(#pillShadow)"/>
                 <circle cx="17" cy="15" r="5.5" fill="none" stroke="#4a4a46" stroke-width="1.5"/><circle cx="17" cy="15" r="1.8" fill="#4a4a46"/>
-                <text x="32" y="19.5" font-family="Roboto, sans-serif" font-size="12.5" fill="#333">Gachibowli Stadium</text>
+                <text x="32" y="19.5" font-family="Inter, sans-serif" font-size="12.5" fill="#333">Gachibowli Stadium</text>
               </g>
               <g class="poi" data-ring="2" transform="translate(500,262)">
                 <rect x="0" y="0" width="118" height="30" rx="15" fill="#ffffff" filter="url(#pillShadow)"/>
                 <circle cx="17" cy="15" r="5.5" fill="none" stroke="#4a4a46" stroke-width="1.5"/><circle cx="17" cy="15" r="1.8" fill="#4a4a46"/>
-                <text x="32" y="19.5" font-family="Roboto, sans-serif" font-size="12.5" fill="#333">ISB · IIIT-H</text>
+                <text x="32" y="19.5" font-family="Inter, sans-serif" font-size="12.5" fill="#333">ISB · IIIT-H</text>
               </g>
               <g class="poi" data-ring="2" transform="translate(880,436)">
                 <rect x="0" y="0" width="118" height="30" rx="15" fill="#ffffff" filter="url(#pillShadow)"/>
                 <circle cx="17" cy="15" r="5.5" fill="none" stroke="#4a4a46" stroke-width="1.5"/><circle cx="17" cy="15" r="1.8" fill="#4a4a46"/>
-                <text x="32" y="19.5" font-family="Roboto, sans-serif" font-size="12.5" fill="#333">Manikonda</text>
+                <text x="32" y="19.5" font-family="Inter, sans-serif" font-size="12.5" fill="#333">Manikonda</text>
               </g>
               <g class="poi" data-ring="3" transform="translate(838,52)">
                 <rect x="0" y="0" width="112" height="30" rx="15" fill="#ffffff" filter="url(#pillShadow)"/>
                 <circle cx="17" cy="15" r="5.5" fill="none" stroke="#4a4a46" stroke-width="1.5"/><circle cx="17" cy="15" r="1.8" fill="#4a4a46"/>
-                <text x="32" y="19.5" font-family="Roboto, sans-serif" font-size="12.5" fill="#333">HITEC City</text>
+                <text x="32" y="19.5" font-family="Inter, sans-serif" font-size="12.5" fill="#333">HITEC City</text>
               </g>
               <g class="poi" data-ring="3" transform="translate(1092,128)">
                 <rect x="0" y="0" width="124" height="30" rx="15" fill="#ffffff" filter="url(#pillShadow)"/>
                 <circle cx="17" cy="15" r="5.5" fill="none" stroke="#4a4a46" stroke-width="1.5"/><circle cx="17" cy="15" r="1.8" fill="#4a4a46"/>
-                <text x="32" y="19.5" font-family="Roboto, sans-serif" font-size="12.5" fill="#333">Jubilee Hills</text>
+                <text x="32" y="19.5" font-family="Inter, sans-serif" font-size="12.5" fill="#333">Jubilee Hills</text>
               </g>
               <g class="poi" data-ring="3" transform="translate(1052,624)">
                 <rect x="0" y="0" width="130" height="30" rx="15" fill="#ffffff" filter="url(#pillShadow)"/>
                 <circle cx="17" cy="15" r="5.5" fill="none" stroke="#4a4a46" stroke-width="1.5"/><circle cx="17" cy="15" r="1.8" fill="#4a4a46"/>
-                <text x="32" y="19.5" font-family="Roboto, sans-serif" font-size="12.5" fill="#333">RGIA Airport</text>
+                <text x="32" y="19.5" font-family="Inter, sans-serif" font-size="12.5" fill="#333">RGIA Airport</text>
               </g>
 
               <!-- project pin -->
               <g transform="translate(600,430)">
                 <path d="M0 14 L-7 2 L7 2 Z" fill="#1d1d1d"/>
                 <rect x="-62" y="-30" width="124" height="34" rx="17" fill="#1d1d1d"/>
-                <text x="0" y="-8" text-anchor="middle" font-family="Roboto, sans-serif" font-size="13" font-weight="500" fill="#ffffff">The Pinnacle</text>
+                <text x="0" y="-8" text-anchor="middle" font-family="Inter, sans-serif" font-size="13" font-weight="500" fill="#ffffff">The Pinnacle</text>
                 <circle cx="0" cy="16" r="3" fill="#1d1d1d"/>
               </g>
             </svg>
@@ -875,7 +860,7 @@
   </main>
 
   <!-- ======= FOOTER ======= -->
-  <footer class="footer">
+  <footer class="footer" data-nav-theme="light">
     <div class="container">
       <div class="footer__top">
         <div class="footer__brand">
@@ -934,21 +919,6 @@
     </div>
   </footer>
 
-  <!-- ======= STICKY PROJECT BAR ======= -->
-  <div class="projbar" id="projbar">
-    <div class="projbar__info">
-      <img src="assets/images/jaya-logo.webp" alt="">
-      <div>
-        <strong>3.5 &amp; 4.5 BHK — Sky Residences</strong>
-        <span>From ₹ 5.25 Cr*</span>
-      </div>
-    </div>
-    <div class="projbar__actions">
-      <button class="btn btn--outline btn--sm" data-open-enquiry>Enquire Now</button>
-      <button class="btn btn--dark btn--sm" data-open-enquiry data-intent="brochure">Brochure</button>
-    </div>
-  </div>
-
   <!-- ======= ENQUIRY MODAL ======= -->
   <div class="modal" id="modal" aria-hidden="true" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
     <div class="modal__card">
@@ -976,6 +946,10 @@
           <div class="floor-plan-zoom-wrapper" id="floorPlanZoomWrapper">
             <img src="" alt="" id="floorPlanImage">
             <div class="flat-hotspots" id="flatHotspots" aria-label="Clickable flat plans"></div>
+          </div>
+          <div class="floor-plan-hint" aria-hidden="true">
+            <svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M9 11V6a2 2 0 1 1 4 0v5M9 11V9a2 2 0 1 0-4 0v3a7 7 0 0 0 7 7h1a6 6 0 0 0 6-6v-3a2 2 0 1 0-4 0v1M13 6a2 2 0 1 1 4 0v5"/></svg>
+            Drag · Pinch · Scroll to zoom
           </div>
           <!-- Floating Zoom Controls -->
           <div class="floor-plan-zoom-controls">
@@ -1014,6 +988,6 @@
     </figure>
   </div>
 
-  <script type="module" src="js/main.js"></script>
+  <script type="module" src="js/main.js?v=4"></script>
 </body>
 </html>

@@ -8,6 +8,7 @@
   const $$ = (sel, ctx = document) => [...ctx.querySelectorAll(sel)];
   const clamp = (v, a, b) => Math.min(Math.max(v, a), b);
   const lerp = (a, b, t) => a + (b - a) * t;
+  const reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
   /* ---------- mobile drawer ---------- */
   const burger = $("#navBurger");
@@ -22,12 +23,25 @@
   burger.addEventListener("click", () => setDrawer(!drawer.classList.contains("is-open")));
   $$(".drawer a, .drawer button").forEach((el) => el.addEventListener("click", () => setDrawer(false)));
 
-  /* ---------- dynamic navbar transparency on scroll ---------- */
+  /* ---------- navbar: shrink logo, frost & adaptive light/dark ---------- */
   const nav = $("#nav");
+  const SHRINK_RANGE = 150;
+  const themedSections = $$("[data-nav-theme]").filter((el) => el !== nav);
   let navTicking = false;
   const updateNavState = () => {
-    nav?.classList.toggle("is-scrolled", window.scrollY > 1);
     navTicking = false;
+    if (!nav) return;
+    const y = window.scrollY;
+    nav.style.setProperty("--nav-shrink", clamp(y / SHRINK_RANGE, 0, 1).toFixed(3));
+    nav.classList.toggle("is-scrolled", y > 4);
+    // the section crossing just below the bar decides the nav's colour theme
+    const probe = (nav.offsetHeight || 64) * 0.5;
+    let theme = "dark";
+    for (const sec of themedSections) {
+      const r = sec.getBoundingClientRect();
+      if (r.top <= probe && r.bottom > probe) { theme = sec.dataset.navTheme || "dark"; break; }
+    }
+    if (nav.dataset.navTheme !== theme) nav.dataset.navTheme = theme;
   };
   window.addEventListener("scroll", () => {
     if (!navTicking) {
@@ -35,7 +49,38 @@
       navTicking = true;
     }
   }, { passive: true });
+  window.addEventListener("resize", () => window.requestAnimationFrame(updateNavState), { passive: true });
   updateNavState();
+
+  /* ---------- hero: still → 3-second clip → still, on a loop ---------- */
+  const heroVideo = $("#heroVideo");
+  if (heroVideo && !reduced) {
+    const HOLD = 2600; // ms resting on the elevation still between plays
+    let timer = null, started = false, inView = true;
+    const playClip = () => {
+      clearTimeout(timer);
+      if (!inView) return;
+      try { heroVideo.currentTime = 0; } catch (_) {}
+      heroVideo.classList.add("is-playing");
+      const p = heroVideo.play();
+      if (p && p.catch) p.catch(() => heroVideo.classList.remove("is-playing"));
+    };
+    const restThenReplay = () => {
+      heroVideo.classList.remove("is-playing"); // crossfade back to the poster still
+      heroVideo.pause();
+      clearTimeout(timer);
+      timer = setTimeout(playClip, HOLD);
+    };
+    heroVideo.addEventListener("ended", restThenReplay);
+    const start = () => { if (started) return; started = true; timer = setTimeout(playClip, 900); };
+    if (heroVideo.readyState >= 2) start();
+    else heroVideo.addEventListener("loadeddata", start, { once: true });
+    new IntersectionObserver((ents) => ents.forEach((e) => {
+      inView = e.isIntersecting;
+      if (!inView) { clearTimeout(timer); heroVideo.pause(); heroVideo.classList.remove("is-playing"); }
+      else if (started) { clearTimeout(timer); timer = setTimeout(playClip, 500); }
+    }), { threshold: 0.12 }).observe(heroVideo);
+  }
 
   /* ---------- reveal on scroll ---------- */
   const io = new IntersectionObserver(
@@ -45,6 +90,41 @@
     { threshold: 0.12, rootMargin: "0px 0px -6% 0px" }
   );
   $$(".reveal").forEach((el) => io.observe(el));
+
+  /* ---------- number count-up ---------- */
+  const countEls = $$("[data-count]");
+  if (countEls.length && !reduced) {
+    const fmt = (n, decimals, pad) => {
+      let s = decimals ? n.toFixed(decimals) : Math.round(n).toString();
+      if (pad) s = s.padStart(pad, "0");
+      const parts = s.split(".");
+      parts[0] = parts[0].replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+      return parts.join(".");
+    };
+    const runCount = (el) => {
+      const target = parseFloat(el.dataset.count);
+      const decimals = parseInt(el.dataset.decimals || "0", 10);
+      const pad = parseInt(el.dataset.pad || "0", 10);
+      const dur = 1500;
+      const t0 = performance.now();
+      const tick = (now) => {
+        const p = clamp((now - t0) / dur, 0, 1);
+        el.textContent = fmt(target * (1 - Math.pow(1 - p, 3)), decimals, pad);
+        if (p < 1) requestAnimationFrame(tick);
+        else el.textContent = fmt(target, decimals, pad);
+      };
+      requestAnimationFrame(tick);
+    };
+    const countIO = new IntersectionObserver((entries) => entries.forEach((e) => {
+      if (e.isIntersecting) { runCount(e.target); countIO.unobserve(e.target); }
+    }), { threshold: 0.4 });
+    countEls.forEach((el) => {
+      const decimals = parseInt(el.dataset.decimals || "0", 10);
+      const pad = parseInt(el.dataset.pad || "0", 10);
+      el.textContent = fmt(0, decimals, pad);
+      countIO.observe(el);
+    });
+  }
 
   /* ---------- active nav link ---------- */
   const navLinks = $$(".nav__links a");
@@ -284,67 +364,58 @@
     }, { passive: true });
   }
 
-  /* ---------- fullscreen amenities carousel ---------- */
+  /* ---------- amenities carousel (one slide per category, 1:1) ---------- */
   const amSlides = $$(".amenities__slide");
   const amButtons = $$("#amenityButtons li");
   const amPrevBtn = $("#amenitiesPrev");
   const amNextBtn = $("#amenitiesNext");
   const amDotsContainer = $("#amenitiesDots");
+  const amCounter = $("#amenitiesCounter");
+  const amRail = $("#amenityButtons");
 
   if (amSlides.length > 0) {
-    let amCurrentIndex = 0;
+    const N = amSlides.length;
+    let amIndex = 0;
+    const pad = (n) => String(n).padStart(2, "0");
 
-    // Create dots
     amSlides.forEach((_, i) => {
       const dot = document.createElement("button");
       dot.type = "button";
-      dot.setAttribute("aria-label", `Go to slide ${i + 1}`);
+      dot.setAttribute("aria-label", `Go to amenity ${i + 1}`);
       if (i === 0) dot.className = "is-active";
       dot.addEventListener("click", () => amGoTo(i));
       amDotsContainer.appendChild(dot);
     });
     const amDots = $$("button", amDotsContainer);
+    if (amCounter) { const t = amCounter.querySelector("span"); if (t) t.textContent = `/ ${pad(N)}`; }
 
     const amGoTo = (index) => {
-      amSlides[amCurrentIndex].classList.remove("is-active");
-      amDots[amCurrentIndex].classList.remove("is-active");
+      amSlides[amIndex].classList.remove("is-active");
+      amDots[amIndex]?.classList.remove("is-active");
+      amButtons[amIndex]?.classList.remove("is-active");
 
-      amCurrentIndex = (index + amSlides.length) % amSlides.length;
+      amIndex = (index + N) % N;
 
-      amSlides[amCurrentIndex].classList.add("is-active");
-      amDots[amCurrentIndex].classList.add("is-active");
+      amSlides[amIndex].classList.add("is-active");
+      amDots[amIndex]?.classList.add("is-active");
+      amButtons[amIndex]?.classList.add("is-active");
+      if (amCounter) amCounter.querySelector("strong").textContent = pad(amIndex + 1);
 
-      // Update top button state
-      const currentGroup = amSlides[amCurrentIndex].dataset.group;
-      amButtons.forEach((btn) => {
-        const btnGroup = btn.dataset.group;
-        btn.classList.toggle("is-active", btnGroup === currentGroup);
-      });
-
-      // Scroll the buttons panel to keep the active one visible on mobile/tablet
-      const activeBtn = $("#amenityButtons li.is-active");
-      if (activeBtn) {
-        const parent = $("#amenityButtons");
-        const parentLeft = parent.getBoundingClientRect().left;
-        const btnLeft = activeBtn.getBoundingClientRect().left;
-        const currentScroll = parent.scrollLeft;
-        parent.scrollTo({
-          left: currentScroll + (btnLeft - parentLeft) - (parent.clientWidth / 2) + (activeBtn.clientWidth / 2),
+      // keep the active category pill in view within the rail
+      const active = amButtons[amIndex];
+      if (active && amRail) {
+        const railLeft = amRail.getBoundingClientRect().left;
+        const btnLeft = active.getBoundingClientRect().left;
+        amRail.scrollTo({
+          left: amRail.scrollLeft + (btnLeft - railLeft) - amRail.clientWidth / 2 + active.clientWidth / 2,
           behavior: "smooth"
         });
       }
     };
 
-    amPrevBtn?.addEventListener("click", () => amGoTo(amCurrentIndex - 1));
-    amNextBtn?.addEventListener("click", () => amGoTo(amCurrentIndex + 1));
-
-    // Click category buttons
-    amButtons.forEach((btn) => {
-      btn.addEventListener("click", () => {
-        const index = parseInt(btn.dataset.slideIndex, 10);
-        amGoTo(index);
-      });
-    });
+    amPrevBtn?.addEventListener("click", () => amGoTo(amIndex - 1));
+    amNextBtn?.addEventListener("click", () => amGoTo(amIndex + 1));
+    amButtons.forEach((btn) => btn.addEventListener("click", () => amGoTo(parseInt(btn.dataset.index, 10))));
   }
 
   /* ---------- interactive residence selector ---------- */
@@ -412,28 +483,118 @@
     floorHotspots.style.top = `${(rect.height - renderedHeight) / 2}px`;
   };
 
-  let floorPlanZoom = 1;
-  const updatePlanZoom = () => {
-    const wrapper = $("#floorPlanZoomWrapper");
-    if (!wrapper) return;
-    wrapper.style.width = `${floorPlanZoom * 100}%`;
-    wrapper.style.height = `${floorPlanZoom * 100}%`;
-    if (floorPlanStage) {
-      if (floorPlanZoom > 1.0) {
-        floorPlanStage.style.cursor = "grab";
+  /* ---------- floor-plan pan / pinch / zoom viewer ---------- */
+  const planViewer = (() => {
+    const stage = floorPlanStage;
+    const layer = $("#floorPlanZoomWrapper");
+    const img = floorPlanImage;
+    if (!stage || !layer || !img) return null;
+
+    let scale = 1, tx = 0, ty = 0, baseW = 0, baseH = 0, natAspect = 4391 / 5923;
+    const MIN = 1, MAX = 4.5;
+
+    const apply = () => {
+      layer.style.setProperty("--k", scale);
+      layer.style.setProperty("--tx", `${tx}px`);
+      layer.style.setProperty("--ty", `${ty}px`);
+      stage.classList.toggle("is-zoomed", scale > 1.01);
+    };
+    const clampT = () => {
+      const mx = Math.max(0, (baseW * scale - stage.clientWidth) / 2);
+      const my = Math.max(0, (baseH * scale - stage.clientHeight) / 2);
+      tx = clamp(tx, -mx, mx);
+      ty = clamp(ty, -my, my);
+    };
+    const computeFit = () => {
+      const body = stage.closest(".floor-modal__body");
+      if (!body) return;
+      const stacked = getComputedStyle(body).flexDirection === "column";
+      const gap = parseFloat(getComputedStyle(body).gap) || 20;
+      if (stacked) {
+        stage.style.width = "";
+        const sw = stage.clientWidth, sh = stage.clientHeight;
+        let w = sw, h = sw / natAspect;
+        if (h > sh) { h = sh; w = sh * natAspect; }
+        baseW = Math.round(w); baseH = Math.round(h);
       } else {
-        floorPlanStage.style.cursor = "";
+        const side = body.querySelector(".floor-modal__side");
+        const bodyH = body.clientHeight;
+        const availW = body.clientWidth - (side ? side.offsetWidth : 0) - gap - 2;
+        let h = bodyH, w = h * natAspect;
+        if (w > availW) { w = availW; h = w / natAspect; }
+        baseW = Math.round(w); baseH = Math.round(h);
+        stage.style.width = `${baseW}px`;
+        stage.style.height = `${baseH}px`;
       }
-    }
-  };
+      layer.style.width = `${baseW}px`;
+      layer.style.height = `${baseH}px`;
+    };
+    const reset = () => { scale = 1; tx = 0; ty = 0; computeFit(); apply(); };
+    const refresh = () => { computeFit(); clampT(); apply(); };
+    const zoomTo = (k, px, py) => {
+      const r = stage.getBoundingClientRect();
+      const Px = px - r.left - r.width / 2;
+      const Py = py - r.top - r.height / 2;
+      const nk = clamp(k, MIN, MAX);
+      tx = Px - (Px - tx) * (nk / scale);
+      ty = Py - (Py - ty) * (nk / scale);
+      scale = nk;
+      clampT(); apply();
+    };
+    const load = (src, alt) => {
+      scale = 1; tx = 0; ty = 0; apply();
+      const done = () => { if (img.naturalWidth) natAspect = img.naturalWidth / img.naturalHeight; reset(); };
+      img.alt = alt || "";
+      if (img.getAttribute("src") === src && img.complete && img.naturalWidth) done();
+      else { img.onload = done; img.src = src; }
+    };
+
+    // pointer gestures: 1 finger / mouse = pan, 2 fingers = pinch
+    const pts = new Map();
+    let pinchDist = 0, panFrom = null;
+    stage.addEventListener("pointerdown", (e) => {
+      if (e.target.closest(".flat-hotspot")) return; // let hotspots handle their own taps
+      stage.setPointerCapture(e.pointerId);
+      pts.set(e.pointerId, { x: e.clientX, y: e.clientY });
+      if (pts.size === 1) { panFrom = { x: e.clientX, y: e.clientY, tx, ty }; if (scale > 1.01) stage.classList.add("is-panning"); }
+      else if (pts.size === 2) { const p = [...pts.values()]; pinchDist = Math.hypot(p[0].x - p[1].x, p[0].y - p[1].y); panFrom = null; }
+    });
+    stage.addEventListener("pointermove", (e) => {
+      if (!pts.has(e.pointerId)) return;
+      pts.set(e.pointerId, { x: e.clientX, y: e.clientY });
+      if (pts.size >= 2) {
+        const p = [...pts.values()];
+        const d = Math.hypot(p[0].x - p[1].x, p[0].y - p[1].y);
+        if (pinchDist) zoomTo(scale * (d / pinchDist), (p[0].x + p[1].x) / 2, (p[0].y + p[1].y) / 2);
+        pinchDist = d;
+      } else if (panFrom && scale > 1.01) {
+        tx = panFrom.tx + (e.clientX - panFrom.x);
+        ty = panFrom.ty + (e.clientY - panFrom.y);
+        clampT(); apply();
+      }
+    });
+    const up = (e) => {
+      pts.delete(e.pointerId);
+      if (pts.size < 2) pinchDist = 0;
+      if (pts.size === 0) { stage.classList.remove("is-panning"); panFrom = null; }
+      else { const p = [...pts.values()][0]; panFrom = { x: p.x, y: p.y, tx, ty }; }
+    };
+    stage.addEventListener("pointerup", up);
+    stage.addEventListener("pointercancel", up);
+    stage.addEventListener("wheel", (e) => { e.preventDefault(); zoomTo(scale * Math.exp(-e.deltaY * 0.0016), e.clientX, e.clientY); }, { passive: false });
+    stage.addEventListener("dblclick", (e) => { e.preventDefault(); if (scale > 1.01) reset(); else zoomTo(2.4, e.clientX, e.clientY); });
+    const ctr = () => { const r = stage.getBoundingClientRect(); return [r.left + r.width / 2, r.top + r.height / 2]; };
+    $("#zoomIn")?.addEventListener("click", () => zoomTo(scale * 1.45, ...ctr()));
+    $("#zoomOut")?.addEventListener("click", () => zoomTo(scale / 1.45, ...ctr()));
+    window.addEventListener("resize", refresh, { passive: true });
+    if ("ResizeObserver" in window) new ResizeObserver(refresh).observe(stage);
+
+    return { load, reset, refresh };
+  })();
 
   const setFloorView = () => {
-    floorPlanZoom = 1;
-    updatePlanZoom();
     const tower = towerPlans[activeTowerKey];
-    floorPlanStage.style.aspectRatio = "4391 / 5923";
-    floorPlanImage.src = tower.floorPlan;
-    floorPlanImage.alt = `${tower.name} typical floor plate`;
+    planViewer?.load(tower.floorPlan, `${tower.name} typical floor plate`);
     if (floorModalKicker) floorModalKicker.textContent = `${tower.name} · Floor ${activeFloor}`;
     if (floorModalTitle) floorModalTitle.textContent = `${tower.name} Typical Floor Plate`;
     if (floorModalSub) floorModalSub.textContent = `Select a flat on Floor ${activeFloor} to view the individual ${tower.type} plan.`;
@@ -460,12 +621,8 @@
   };
 
   const setFlatView = (unit) => {
-    floorPlanZoom = 1;
-    updatePlanZoom();
     const tower = towerPlans[activeTowerKey];
-    floorPlanStage.style.aspectRatio = "2056 / 2977";
-    floorPlanImage.src = unit.plan;
-    floorPlanImage.alt = `${tower.name} ${unit.unit} floor plan`;
+    planViewer?.load(unit.plan, `${tower.name} ${unit.unit} floor plan`);
     if (floorModalKicker) floorModalKicker.textContent = `${tower.name} · Floor ${activeFloor}`;
     if (floorModalTitle) floorModalTitle.textContent = `${unit.unit} · ${unit.type}`;
     if (floorModalSub) floorModalSub.textContent = `${unit.area} ${unit.facing.toLowerCase()}-facing residence.`;
@@ -494,6 +651,7 @@
     floorModal.setAttribute("aria-hidden", "false");
     document.body.style.overflow = "hidden";
     floorModalClose.focus();
+    requestAnimationFrame(() => planViewer?.refresh());
   };
 
   const closeFloorModal = () => {
@@ -532,64 +690,6 @@
     floorModalClose.addEventListener("click", closeFloorModal);
     floorModal.addEventListener("click", (e) => { if (e.target === floorModal) closeFloorModal(); });
     floorBack.addEventListener("click", setFloorView);
-
-    // Zoom handlers
-    $("#zoomIn")?.addEventListener("click", () => {
-      floorPlanZoom = Math.min(floorPlanZoom + 0.25, 2.5);
-      updatePlanZoom();
-    });
-    $("#zoomOut")?.addEventListener("click", () => {
-      floorPlanZoom = Math.max(floorPlanZoom - 0.25, 1.0);
-      updatePlanZoom();
-    });
-
-    // Drag-to-scroll / panning logic for floor plan stage
-    let isDown = false;
-    let startX;
-    let startY;
-    let scrollLeft;
-    let scrollTop;
-
-    floorPlanStage?.addEventListener("mousedown", (e) => {
-      if (floorPlanZoom <= 1.0) return;
-      if (e.target.tagName.toLowerCase() === "img") {
-        e.preventDefault();
-      }
-      isDown = true;
-      floorPlanStage.classList.add("is-dragging");
-      floorPlanStage.style.cursor = "grabbing";
-      startX = e.pageX - floorPlanStage.offsetLeft;
-      startY = e.pageY - floorPlanStage.offsetTop;
-      scrollLeft = floorPlanStage.scrollLeft;
-      scrollTop = floorPlanStage.scrollTop;
-    });
-
-    floorPlanStage?.addEventListener("mouseleave", () => {
-      isDown = false;
-      floorPlanStage.classList.remove("is-dragging");
-      if (floorPlanStage) {
-        floorPlanStage.style.cursor = floorPlanZoom > 1.0 ? "grab" : "";
-      }
-    });
-
-    floorPlanStage?.addEventListener("mouseup", () => {
-      isDown = false;
-      floorPlanStage.classList.remove("is-dragging");
-      if (floorPlanStage) {
-        floorPlanStage.style.cursor = floorPlanZoom > 1.0 ? "grab" : "";
-      }
-    });
-
-    floorPlanStage?.addEventListener("mousemove", (e) => {
-      if (!isDown) return;
-      e.preventDefault();
-      const x = e.pageX - floorPlanStage.offsetLeft;
-      const y = e.pageY - floorPlanStage.offsetTop;
-      const walkX = (x - startX) * 1.5;
-      const walkY = (y - startY) * 1.5;
-      floorPlanStage.scrollLeft = scrollLeft - walkX;
-      floorPlanStage.scrollTop = scrollTop - walkY;
-    });
   }
 
   /* ---------- CONNECTED map: pinned scroll animation ---------- */
@@ -602,7 +702,6 @@
   const radiusPulse = $("#radiusPulse");
   const mapZoom = $("#mapZoom");
   const pois = $$(".poi");
-  const reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
   const RINGS = [
     { at: 0.3, ring: "1" },
@@ -660,25 +759,6 @@
     stops.forEach((s) => s.classList.add("is-on"));
     timelineFill.style.width = "100%";
   }
-
-  /* ---------- sticky project bar: hide near footer & forms ---------- */
-  const projbar = $("#projbar");
-  const hideZones = ["#enquire", ".footer"].map((s) => $(s)).filter(Boolean);
-  const barIO = new IntersectionObserver(
-    (entries) => {
-      const anyVisible = entries.some((e) => e.isIntersecting);
-      if (anyVisible) projbar.classList.add("is-hidden");
-      else {
-        const stillVisible = hideZones.some((z) => {
-          const r = z.getBoundingClientRect();
-          return r.top < window.innerHeight && r.bottom > 0;
-        });
-        if (!stillVisible) projbar.classList.remove("is-hidden");
-      }
-    },
-    { threshold: 0.05 }
-  );
-  hideZones.forEach((z) => barIO.observe(z));
 
   /* ---------- lightbox ---------- */
   const lightbox = $("#lightbox");
