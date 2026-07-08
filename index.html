@@ -452,6 +452,10 @@
       <div class="res-selector" id="residenceSelector">
         <div class="res-selector__brand reveal">
           <img src="assets/images/jaya-logo-high-res.png" alt="Jayabheri The Pinnacle Logo">
+          <div class="res-selector__buttons">
+            <button class="btn-pinnacle-plan" id="openMasterPlan">Master Plan</button>
+            <button class="btn-pinnacle-plan" id="openFloorPlans">Floor Plans</button>
+          </div>
         </div>
         <div class="res-selector__copy reveal">
           <h2 class="h-display">Choose Your Residence</h2>
@@ -1046,6 +1050,28 @@
       <img src="" alt="" id="lightboxImg">
       <figcaption id="lightboxCap"></figcaption>
     </figure>
+  </div>
+
+  <!-- ======= PLAN MODAL ======= -->
+  <div class="plan-modal" id="planModal" aria-hidden="true" role="dialog" aria-modal="true">
+    <div class="plan-modal__overlay" id="planModalOverlay"></div>
+    <div class="plan-modal__content">
+      <button class="plan-modal__close" id="planModalClose" aria-label="Close modal">
+        <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M18 6L6 18M6 6l12 12"/></svg>
+      </button>
+      <div class="plan-modal__body">
+        <h3 class="plan-modal__title" id="planModalTitle">Master Plan</h3>
+        <div class="plan-modal__viewer">
+          <div class="plan-modal__image-wrapper">
+            <img src="" alt="" id="planModalImage" class="plan-modal__image">
+          </div>
+          <div class="plan-modal__tabs" id="planModalTabs">
+            <button class="plan-modal__tab-btn is-active" data-tower="A">Tower A</button>
+            <button class="plan-modal__tab-btn" data-tower="B">Tower B</button>
+          </div>
+        </div>
+      </div>
+    </div>
   </div>
 
   <script type="module" src="js/main.js?v=5"></script>

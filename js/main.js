@@ -1055,4 +1055,80 @@
   };
   
   initViewsSlider();
+
+  /* ---------- Master/Floor Plans Modal ---------- */
+  const initPlanModal = () => {
+    const modal = $("#planModal");
+    const title = $("#planModalTitle");
+    const image = $("#planModalImage");
+    const tabs = $("#planModalTabs");
+    const overlay = $("#planModalOverlay");
+    const closeBtn = $("#planModalClose");
+    
+    const openMaster = $("#openMasterPlan");
+    const openFloor = $("#openFloorPlans");
+    
+    if (!modal || !openMaster || !openFloor) return;
+    
+    const openModal = (type) => {
+      modal.classList.add("is-open");
+      modal.setAttribute("aria-hidden", "false");
+      document.body.style.overflow = "hidden"; // lock page scroll
+      
+      if (type === "master") {
+        title.textContent = "Master Plan";
+        image.src = "assets/images/plan/master.webp";
+        tabs.style.display = "none";
+      } else {
+        title.textContent = "Floor Plans";
+        image.src = "assets/images/plan/TOWER-A.webp";
+        tabs.style.display = "flex";
+        
+        // reset tab states
+        const tabBtns = $$(".plan-modal__tab-btn");
+        tabBtns.forEach((btn, idx) => {
+          btn.classList.toggle("is-active", idx === 0);
+        });
+      }
+    };
+    
+    const closeModal = () => {
+      modal.classList.remove("is-open");
+      modal.setAttribute("aria-hidden", "true");
+      document.body.style.overflow = ""; // unlock page scroll
+      // Clear image to avoid flash of old content on next open
+      setTimeout(() => { image.src = ""; }, 300);
+    };
+    
+    openMaster.addEventListener("click", () => openModal("master"));
+    openFloor.addEventListener("click", () => openModal("floor"));
+    closeBtn.addEventListener("click", closeModal);
+    overlay.addEventListener("click", closeModal);
+    
+    // Handle floor plan tab clicks
+    tabs.addEventListener("click", (e) => {
+      const btn = e.target.closest(".plan-modal__tab-btn");
+      if (!btn) return;
+      
+      const tabBtns = $$(".plan-modal__tab-btn");
+      tabBtns.forEach(b => b.classList.remove("is-active"));
+      btn.classList.add("is-active");
+      
+      const tower = btn.getAttribute("data-tower");
+      if (tower === "A") {
+        image.src = "assets/images/plan/TOWER-A.webp";
+      } else {
+        image.src = "assets/images/plan/TOWER-B.webp";
+      }
+    });
+    
+    // Close on ESC key
+    window.addEventListener("keydown", (e) => {
+      if (e.key === "Escape" && modal.classList.contains("is-open")) {
+        closeModal();
+      }
+    });
+  };
+  
+  initPlanModal();
 })();
