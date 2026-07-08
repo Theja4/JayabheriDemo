@@ -1068,12 +1068,151 @@
     const openMaster = $("#openMasterPlan");
     const openFloor = $("#openFloorPlans");
     
-    if (!modal || !openMaster || !openFloor) return;
+    // Zoom & Pan elements
+    const stage = $("#planModalZoomStage");
+    const layer = $("#planModalZoomLayer");
+    
+    if (!modal || !openMaster || !openFloor || !stage || !layer) return;
+    
+    let scale = 1;
+    let tx = 0;
+    let ty = 0;
+    let isDragging = false;
+    let startX = 0;
+    let startY = 0;
+    
+    // Touch tracking for pinch-to-zoom
+    let touchStartScale = 1;
+    let lastTouchDistance = 0;
+    
+    const applyTransform = () => {
+      layer.style.setProperty("--k", scale);
+      layer.style.setProperty("--tx", `${tx}px`);
+      layer.style.setProperty("--ty", `${ty}px`);
+    };
+    
+    const resetZoom = () => {
+      scale = 1;
+      tx = 0;
+      ty = 0;
+      applyTransform();
+    };
+    
+    const clampTranslations = () => {
+      if (scale <= 1) {
+        tx = 0;
+        ty = 0;
+        return;
+      }
+      const maxTx = (stage.clientWidth * (scale - 1)) / 2;
+      const maxTy = (stage.clientHeight * (scale - 1)) / 2;
+      tx = clamp(tx, -maxTx, maxTx);
+      ty = clamp(ty, -maxTy, maxTy);
+    };
+    
+    const getDistance = (t1, t2) => {
+      return Math.hypot(t2.clientX - t1.clientX, t2.clientY - t1.clientY);
+    };
+    
+    // Mouse Drag (Desktop)
+    stage.addEventListener("mousedown", (e) => {
+      if (scale <= 1) return;
+      isDragging = true;
+      startX = e.clientX - tx;
+      startY = e.clientY - ty;
+      stage.classList.add("is-dragging");
+    });
+    
+    window.addEventListener("mousemove", (e) => {
+      if (!isDragging) return;
+      tx = e.clientX - startX;
+      ty = e.clientY - startY;
+      clampTranslations();
+      applyTransform();
+    });
+    
+    window.addEventListener("mouseup", () => {
+      isDragging = false;
+      stage.classList.remove("is-dragging");
+    });
+    
+    // Mouse Wheel Zoom (Desktop)
+    stage.addEventListener("wheel", (e) => {
+      e.preventDefault();
+      const zoomSpeed = 0.15;
+      const prevScale = scale;
+      if (e.deltaY < 0) {
+        scale = Math.min(4, scale + zoomSpeed);
+      } else {
+        scale = Math.max(1, scale - zoomSpeed);
+      }
+      
+      if (scale === 1) {
+        tx = 0;
+        ty = 0;
+      } else {
+        const rect = stage.getBoundingClientRect();
+        const mouseX = e.clientX - rect.left - rect.width / 2;
+        const mouseY = e.clientY - rect.top - rect.height / 2;
+        tx -= (mouseX * (scale - prevScale)) / scale;
+        ty -= (mouseY * (scale - prevScale)) / scale;
+        clampTranslations();
+      }
+      applyTransform();
+    }, { passive: false });
+    
+    // Touch Panning & Pinch-to-Zoom (Mobile)
+    stage.addEventListener("touchstart", (e) => {
+      if (e.touches.length === 2) {
+        isDragging = false;
+        lastTouchDistance = getDistance(e.touches[0], e.touches[1]);
+        touchStartScale = scale;
+      } else if (e.touches.length === 1) {
+        isDragging = true;
+        startX = e.touches[0].clientX - tx;
+        startY = e.touches[0].clientY - ty;
+        stage.classList.add("is-dragging");
+      }
+    }, { passive: true });
+    
+    stage.addEventListener("touchmove", (e) => {
+      if (e.touches.length === 2) {
+        e.preventDefault();
+        const dist = getDistance(e.touches[0], e.touches[1]);
+        const factor = dist / (lastTouchDistance || 1);
+        scale = Math.max(1, Math.min(4, touchStartScale * factor));
+        if (scale === 1) {
+          tx = 0;
+          ty = 0;
+        } else {
+          clampTranslations();
+        }
+        applyTransform();
+      } else if (e.touches.length === 1 && isDragging) {
+        e.preventDefault();
+        tx = e.touches[0].clientX - startX;
+        ty = e.touches[0].clientY - startY;
+        clampTranslations();
+        applyTransform();
+      }
+    }, { passive: false });
+    
+    stage.addEventListener("touchend", (e) => {
+      isDragging = false;
+      stage.classList.remove("is-dragging");
+      if (e.touches.length === 1) {
+        startX = e.touches[0].clientX - tx;
+        startY = e.touches[0].clientY - ty;
+        isDragging = true;
+        stage.classList.add("is-dragging");
+      }
+    });
     
     const openModal = (type) => {
       modal.classList.add("is-open");
       modal.setAttribute("aria-hidden", "false");
       document.body.style.overflow = "hidden"; // lock page scroll
+      resetZoom();
       
       if (type === "master") {
         title.textContent = "Master Plan";
@@ -1096,8 +1235,7 @@
       modal.classList.remove("is-open");
       modal.setAttribute("aria-hidden", "true");
       document.body.style.overflow = ""; // unlock page scroll
-      // Clear image to avoid flash of old content on next open
-      setTimeout(() => { image.src = ""; }, 300);
+      setTimeout(() => { image.src = ""; resetZoom(); }, 300);
     };
     
     openMaster.addEventListener("click", () => openModal("master"));
@@ -1113,6 +1251,8 @@
       const tabBtns = $$(".plan-modal__tab-btn");
       tabBtns.forEach(b => b.classList.remove("is-active"));
       btn.classList.add("is-active");
+      
+      resetZoom();
       
       const tower = btn.getAttribute("data-tower");
       if (tower === "A") {

@@ -1697,22 +1697,39 @@ button { font-family: inherit; cursor: pointer; }
   gap: 20px;
 }
 .plan-modal__image-wrapper {
+  position: relative;
   width: 100%;
-  display: flex;
-  justify-content: center;
-  border-radius: 16px;
-  overflow: hidden;
+  height: clamp(380px, 58vh, 660px);
+  overflow: hidden; /* Hide overflow when zoomed in! */
   background: rgba(0, 0, 0, 0.4);
   border: 1px solid rgba(255, 255, 255, 0.06);
-  padding: 10px;
+  border-radius: 16px;
+  cursor: grab;
+  user-select: none;
+  touch-action: none; /* Disable default browser touch actions for smooth pinch-to-zoom! */
+}
+.plan-modal__image-wrapper.is-dragging {
+  cursor: grabbing;
+}
+.plan-modal__zoom-layer {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transform: translate(var(--tx, 0px), var(--ty, 0px)) scale(var(--k, 1));
+  transform-origin: center center;
+  will-change: transform;
+  transition: transform 0.08s ease-out; /* Slight transition for butter-smooth sludge feel! */
 }
 .plan-modal__image {
   max-width: 100%;
-  max-height: clamp(380px, 58vh, 660px);
+  max-height: 100%;
   object-fit: contain;
   border-radius: 12px;
   user-select: none;
   -webkit-user-drag: none;
+  pointer-events: none; /* Let pointer events pass to zoom stage */
 }
 .plan-modal__tabs {
   display: none;
