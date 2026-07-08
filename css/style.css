@@ -192,7 +192,7 @@ button { font-family: inherit; cursor: pointer; }
 }
 .nav__brand { position: relative; display: inline-flex; align-items: center; line-height: 0; }
 .nav__logo {
-  height: calc(58px - 22px * var(--nav-shrink));
+  height: calc(116px - 44px * var(--nav-shrink));
   width: auto; display: block;
   transition: opacity .45s var(--ease-lux);
 }
