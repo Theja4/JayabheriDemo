@@ -1480,14 +1480,31 @@ button { font-family: inherit; cursor: pointer; }
 
 /* Responsive adjustments */
 @media (max-width: 1080px) {
-  .amenities__header { padding: clamp(48px, 6vh, 64px) 0 clamp(8px, 1.5vh, 12px); width: 92vw; }
-  .amenities__selector-card {
-    position: absolute;
-    left: 50%;
-    top: auto;
-    bottom: 92px;
-    transform: translateX(-50%);
+  .amenities {
+    height: auto;
+    min-height: 100svh;
+  }
+  .amenities__header {
+    padding: clamp(36px, 5vh, 48px) 0 16px;
+    width: 92vw;
+  }
+  .amenities__carousel {
+    position: relative;
     width: min(440px, 94vw);
+    height: clamp(240px, 32vh, 300px);
+    margin: 0 auto 16px;
+    border-radius: 20px;
+    overflow: hidden;
+    box-shadow: 0 16px 40px rgba(0,0,0,0.3);
+  }
+  .amenities__selector-card {
+    position: relative;
+    left: auto;
+    top: auto;
+    bottom: auto;
+    transform: none;
+    width: min(440px, 94vw);
+    margin: 0 auto 16px;
     padding: 12px 16px;
     gap: 6px;
     border-radius: 20px;
@@ -1521,14 +1538,25 @@ button { font-family: inherit; cursor: pointer; }
   .amenities__card {
     display: none;
   }
+  .amenities__controls {
+    position: relative;
+    bottom: auto;
+    padding-bottom: 24px;
+    margin-top: 8px;
+  }
   .amenities__dots { display: none; }
 }
 @media (max-width: 480px) {
+  .amenities__carousel {
+    height: clamp(180px, 25vh, 220px);
+    width: min(420px, 94vw);
+    margin-bottom: 12px;
+  }
   .amenities__selector-card {
-    bottom: 84px;
     padding: 8px 12px;
     gap: 4px;
     width: min(420px, 94vw);
+    margin-bottom: 12px;
   }
   .am-selector-title {
     font-size: 12.5px;
@@ -1541,37 +1569,42 @@ button { font-family: inherit; cursor: pointer; }
   .am-icon-circle-label { font-size: 7px; max-width: 58px; letter-spacing: 0.01em; }
   .amenities__btn { width: 42px; height: 42px; }
   .amenities__counter strong { font-size: 20px; }
+  .amenities__controls {
+    padding-bottom: 16px;
+  }
 }
 
 /* ---------- Plan Modal Buttons & Styles ---------- */
 .res-selector__buttons {
   display: flex;
-  gap: clamp(12px, 1.5vw, 18px);
-  justify-content: center;
-  margin-top: 18px;
+  flex-direction: column;
+  gap: 12px;
+  align-items: center;
+  margin-top: 20px;
   width: 100%;
 }
 .btn-pinnacle-plan {
-  background: rgba(255, 255, 255, 0.06);
-  border: 1px solid rgba(255, 255, 255, 0.2);
-  color: #ffffff;
-  padding: 10px 22px;
-  border-radius: 30px;
   font-family: var(--font-label);
   font-size: 11px;
-  font-weight: 500;
-  letter-spacing: 0.14em;
+  font-weight: 600;
+  letter-spacing: .12em;
   text-transform: uppercase;
+  color: #fff;
+  background: var(--gold);
+  border: 1px solid var(--gold);
+  padding: 12px 26px;
+  border-radius: var(--pill);
+  width: min(220px, 90vw);
+  text-align: center;
   cursor: pointer;
-  transition: all 0.3s var(--ease-lux);
-  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.15);
+  box-shadow: 0 8px 24px rgba(160, 138, 92, 0.32);
+  transition: background 0.35s var(--ease-lux), transform 0.35s var(--ease-lux), box-shadow 0.35s var(--ease-lux);
 }
 .btn-pinnacle-plan:hover {
-  background: #ffffff;
-  color: var(--black);
-  border-color: #ffffff;
-  transform: translateY(-2px);
-  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.3);
+  background: #8f7a4c;
+  border-color: #8f7a4c;
+  transform: translateY(-1px);
+  box-shadow: 0 12px 30px rgba(160, 138, 92, 0.42);
 }
 
 .plan-modal {
@@ -2003,6 +2036,7 @@ button { font-family: inherit; cursor: pointer; }
 .res-selector__brand {
   left: clamp(16px, 3.5vw, 68px);
   align-items: center;
+  pointer-events: auto;
 }
 .res-selector__brand img {
   width: clamp(150px, 15vw, 240px);
