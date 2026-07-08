@@ -48,7 +48,7 @@
   --radius: 18px;
   --pill: 80px;
   --nav-h: 64px;
-  --nav-h-hero: 108px;
+  --nav-h-hero: 148px;
   --util-h: 0px;
   --ease: cubic-bezier(.25, .6, .3, 1);
   --ease-lux: cubic-bezier(.22, 1, .36, 1);
@@ -192,7 +192,7 @@ button { font-family: inherit; cursor: pointer; }
 }
 .nav__brand { position: relative; display: inline-flex; align-items: center; line-height: 0; }
 .nav__logo {
-  height: calc(116px - 44px * var(--nav-shrink));
+  height: calc(116px - 80px * var(--nav-shrink));
   width: auto; display: block;
   transition: opacity .45s var(--ease-lux);
 }
