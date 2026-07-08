@@ -63,40 +63,192 @@
   );
   $$(".reveal").forEach((el) => io.observe(el));
 
-  /* ---------- number count-up ---------- */
-  const countEls = $$("[data-count]");
-  if (countEls.length && !reduced) {
-    const fmt = (n, decimals, pad) => {
-      let s = decimals ? n.toFixed(decimals) : Math.round(n).toString();
+  /* ---------- intro: cinematic scroll choreography ---------- */
+  (() => {
+    const section = $(".intro");
+    if (!section) return;
+    const pin = $(".intro__pin", section);
+    const eyebrow = $(".intro__eyebrow-line", section);
+    const titleLines = $$(".intro__title-line", section);
+    const towerClip = $(".intro__tower-clip", section);
+    const towerImg = $(".intro__tower img", section);
+    const shine = $(".intro__shine", section);
+    const glow = $(".intro__glow", section);
+    const leftStats = $$(".intro__stats--left .intro-stat", section);
+    const rightStats = $$(".intro__stats--right .intro-stat", section);
+    const numEls = $$("[data-num]", section);
+    const fxEls = $$(".intro__fx", section);
+
+    const fmt = (n, dec, pad) => {
+      let s = dec ? n.toFixed(dec) : Math.round(n).toString();
       if (pad) s = s.padStart(pad, "0");
       const parts = s.split(".");
       parts[0] = parts[0].replace(/\B(?=(\d{3})+(?!\d))/g, ",");
       return parts.join(".");
     };
-    const runCount = (el) => {
-      const target = parseFloat(el.dataset.count);
-      const decimals = parseInt(el.dataset.decimals || "0", 10);
-      const pad = parseInt(el.dataset.pad || "0", 10);
-      const dur = 1500;
-      const t0 = performance.now();
-      const tick = (now) => {
-        const p = clamp((now - t0) / dur, 0, 1);
-        el.textContent = fmt(target * (1 - Math.pow(1 - p, 3)), decimals, pad);
-        if (p < 1) requestAnimationFrame(tick);
-        else el.textContent = fmt(target, decimals, pad);
+    const setNum = (el, v) =>
+      (el.textContent = fmt(v, parseInt(el.dataset.decimals || "0", 10), parseInt(el.dataset.pad || "0", 10)));
+    const sub = (v, a, b) => clamp((v - a) / (b - a), 0, 1);
+    const eo = (t) => 1 - Math.pow(1 - t, 3);
+    const eio = (t) => (t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2);
+
+    const cinematic = !reduced && window.matchMedia("(min-width: 1081px)").matches;
+
+    if (cinematic) {
+      section.classList.add("is-cinematic");
+      fxEls.forEach((el) => el.classList.remove("intro__fx"));
+      const nums = numEls.map((el, i) => ({
+        el,
+        target: parseFloat(el.dataset.num),
+        a: 0.25 + (i % 4) * 0.05,
+        b: 0.85 + (i % 4) * 0.05,
+      }));
+
+      let ticking = false;
+      const render = () => {
+        ticking = false;
+        const rect = pin.getBoundingClientRect();
+        const range = rect.height - window.innerHeight;
+
+        // Calculate progress continuously: p starts at 0 before pinning (60% entry)
+        // reaches exactly 0.75 when pinning starts, and completes 100% by 35% of the pinned scroll length.
+        let p = 0;
+        if (rect.top > 0) {
+          const entranceStart = window.innerHeight * 0.6;
+          p = clamp(1 - rect.top / entranceStart, 0, 1) * 0.75;
+        } else {
+          p = 0.75 + clamp(-rect.top / (range || 1), 0, 1) * 0.25;
+        }
+
+        // heading — line masks rise into view
+        eyebrow.style.transform = `translateY(${(1 - eo(sub(p, 0.05, 0.60))) * 120}%)`;
+        titleLines.forEach((ln, i) => {
+          ln.style.transform = `translateY(${(1 - eo(sub(p, 0.10 + i * 0.04, 0.80 + i * 0.04))) * 120}%)`;
+        });
+
+        // image — clip-path rise + corner-radius morph + inner scale & parallax
+        const ip = eo(sub(p, 0.15, 0.85));
+        towerClip.style.clipPath =
+          `inset(${(1 - ip) * 100}% 0% 0% 0% round ${lerp(200, 74, ip)}px ${lerp(200, 0, ip)}px 0 0)`;
+        const drift = sub(p, 0.15, 0.90);
+        towerImg.style.transform = `scale(${lerp(1.18, 1.08, ip)}) translateY(${lerp(1.5, -1, drift)}%)`;
+
+        // light sweep across the towers
+        const shp = sub(p, 0.40, 0.80);
+        shine.style.opacity = shp > 0.02 && shp < 0.98 ? 0.9 : 0;
+        shine.style.transform = `translateX(${lerp(-170, 340, shp)}%) rotate(8deg)`;
+
+        // stats — slide in from the sides, staggered, with a settling blur
+        const doStat = (st, i, dir) => {
+          const sp = eo(sub(p, 0.25 + i * 0.05, 0.90 + i * 0.05));
+          st.style.opacity = sp;
+          st.style.transform = `translateX(${(1 - sp) * dir * 46}px)`;
+          st.style.filter = sp < 0.985 ? `blur(${(1 - sp) * 6}px)` : "none";
+        };
+        leftStats.forEach((st, i) => doStat(st, i, -1));
+        rightStats.forEach((st, i) => doStat(st, i, 1));
+
+        // numbers climb as you scroll
+        nums.forEach((c) => setNum(c.el, c.target * eio(sub(p, c.a, c.b))));
+
+        // ambience — gold glow blooms, ascent lines draw down
+        glow.style.opacity = eo(sub(p, 0.10, 0.80)) * 0.95;
+        glow.style.transform = `translate(-50%, -50%) scale(${lerp(0.78, 1.1, p)})`;
       };
-      requestAnimationFrame(tick);
+      const onScroll = () => {
+        if (!ticking) { ticking = true; requestAnimationFrame(render); }
+      };
+      window.addEventListener("scroll", onScroll, { passive: true });
+      window.addEventListener("resize", onScroll);
+      render();
+    } else {
+      // tablet / mobile / reduced-motion — graceful staggered fade + count on view
+      const io = new IntersectionObserver(
+        (entries) =>
+          entries.forEach((e) => {
+            if (!e.isIntersecting) return;
+            e.target.classList.add("is-in");
+            io.unobserve(e.target);
+          }),
+        { threshold: 0.16, rootMargin: "0px 0px -8% 0px" }
+      );
+      fxEls.forEach((el, i) => { el.style.transitionDelay = `${i * 0.09}s`; io.observe(el); });
+
+      if (!reduced) {
+        const cIO = new IntersectionObserver(
+          (entries) =>
+            entries.forEach((e) => {
+              if (!e.isIntersecting) return;
+              const el = e.target, target = parseFloat(el.dataset.num), t0 = performance.now();
+              const tick = (now) => {
+                const q = clamp((now - t0) / 1500, 0, 1);
+                setNum(el, target * (1 - Math.pow(1 - q, 3)));
+                if (q < 1) requestAnimationFrame(tick);
+              };
+              requestAnimationFrame(tick);
+              cIO.unobserve(el);
+            }),
+          { threshold: 0.5 }
+        );
+        numEls.forEach((el) => { setNum(el, 0); cIO.observe(el); });
+      }
+    }
+  })();
+
+  /* ---------- the club: card flows in edge-to-edge on scroll ---------- */
+  (() => {
+    const section = $(".club");
+    if (!section || reduced) return;
+    const card = $(".club__card", section);
+    const building = $(".club__building", section);
+    const words = $$(".club__word", section);
+    const subCopy = $(".club__sub", section);
+    const linkWrap = $(".club__link-wrap", section);
+    const sub = (v, a, b) => clamp((v - a) / (b - a), 0, 1);
+    const eo = (t) => 1 - Math.pow(1 - t, 3);
+
+    let ticking = false;
+    const render = () => {
+      ticking = false;
+      const vh = window.innerHeight;
+      const rect = section.getBoundingClientRect();
+      // entrance progress: 0 as the section's top enters at the viewport bottom,
+      // 1 as it settles at the top
+      const q = clamp((vh - rect.top) / (vh * 0.9), 0, 1);
+
+      // the dark card expands from a rounded inset card to full edge-to-edge
+      const ce = eo(sub(q, 0.04, 0.82));
+      const insV = lerp(4.5, 0, ce), insH = lerp(4, 0, ce), rad = lerp(60, 0, ce);
+      card.style.clipPath = `inset(${insV}vh ${insH}vw ${insV}vh ${insH}vw round ${rad}px)`;
+
+      // the clubhouse slides in from right to left
+      const bp = eo(sub(q, 0.2, 0.92));
+      building.style.opacity = bp;
+      building.style.transform = `translateX(${(1 - bp) * 140}px) translateY(${(1 - bp) * 40}px) scale(${lerp(1.04, 1, bp)})`;
+
+      // wordmark rises out of its mask, letter-group by letter-group
+      words.forEach((w, i) => {
+        const wp = eo(sub(q, 0.34 + i * 0.09, 0.78 + i * 0.09));
+        w.style.transform = `translateY(${(1 - wp) * 106}%)`;
+      });
+
+      // sub-copy slides in from left to right with a stagger
+      const sp = eo(sub(q, 0.48, 0.86));
+      subCopy.style.opacity = sp;
+      subCopy.style.transform = `translateX(${(1 - sp) * -40}px) translateY(${(1 - sp) * 15}px)`;
+
+      // explore link wrapper enters last, sliding up and scaling
+      const lp = eo(sub(q, 0.58, 0.94));
+      linkWrap.style.opacity = lp;
+      linkWrap.style.transform = `translateY(${(1 - lp) * 40}px) scale(${lerp(0.92, 1, lp)})`;
     };
-    const countIO = new IntersectionObserver((entries) => entries.forEach((e) => {
-      if (e.isIntersecting) { runCount(e.target); countIO.unobserve(e.target); }
-    }), { threshold: 0.4 });
-    countEls.forEach((el) => {
-      const decimals = parseInt(el.dataset.decimals || "0", 10);
-      const pad = parseInt(el.dataset.pad || "0", 10);
-      el.textContent = fmt(0, decimals, pad);
-      countIO.observe(el);
-    });
-  }
+    const onScroll = () => {
+      if (!ticking) { ticking = true; requestAnimationFrame(render); }
+    };
+    window.addEventListener("scroll", onScroll, { passive: true });
+    window.addEventListener("resize", onScroll);
+    render();
+  })();
 
   /* ---------- active nav link ---------- */
   const navLinks = $$(".nav__links a");
@@ -305,101 +457,44 @@
     prevBtn.addEventListener("click", () => showSlide(currentIndex - 1));
     nextBtn.addEventListener("click", () => showSlide(currentIndex + 1));
     
+    // Dynamic image scaling: cover if wider than viewport, contain if taller/narrower (leaves side bars)
+    const fitGalleryImages = () => {
+      $$(".gallery__slide img").forEach((img) => {
+        const checkFit = () => {
+          const container = img.closest(".gallery__slide");
+          if (!container) return;
+          const imgAR = img.naturalWidth / img.naturalHeight;
+          const containerAR = container.clientWidth / (container.clientHeight || 1);
+          
+          if (imgAR > containerAR) {
+            img.style.objectFit = "cover";
+            img.style.width = "100%";
+            img.style.height = "100%";
+          } else {
+            img.style.objectFit = "contain";
+            img.style.width = "auto";
+            img.style.height = "auto";
+            img.style.maxWidth = "100%";
+            img.style.maxHeight = "100%";
+          }
+        };
+        if (img.complete) {
+          checkFit();
+        } else {
+          img.onload = checkFit;
+        }
+      });
+    };
+
+    window.addEventListener("resize", fitGalleryImages);
+    fitGalleryImages();
+
     renderControls();
   };
   
   initGallery();
 
-  /* ---------- grand welcome carousel ---------- */
-  const wTrack = $("#welcomeTrack");
-  if (wTrack) {
-    const slides = $$(".welcome__slide", wTrack);
-    const dots = $$("#welcomeDots button");
-    const GAP = 18;
-    const step = () => wTrack.clientWidth + GAP;
-    let current = 0;
-    
-    let isDown = false;
-    let startX;
-    let scrollLeftVal;
-    let hasMoved = false;
 
-    const go = (i) => {
-      current = clamp(i, 0, slides.length - 1);
-      wTrack.scrollTo({ left: current * step(), behavior: "smooth" });
-    };
-    $("#welcomePrev").addEventListener("click", () => go(current - 1));
-    $("#welcomeNext").addEventListener("click", () => go(current + 1));
-    dots.forEach((d, i) => d.addEventListener("click", () => go(i)));
-    
-    // dots track the animation live; `current` commits once scrolling settles
-    // so rapid clicks aren't reset by in-flight smooth scrolling
-    let settle;
-    wTrack.addEventListener("scroll", () => {
-      if (isDown) return;
-      const i = clamp(Math.round(wTrack.scrollLeft / step()), 0, slides.length - 1);
-      dots.forEach((d, j) => d.classList.toggle("is-active", j === i));
-      clearTimeout(settle);
-      settle = setTimeout(() => { current = i; }, 90);
-    }, { passive: true });
-
-    /* Drag to scroll (desktop mouse drag) */
-    wTrack.addEventListener("mousedown", (e) => {
-      isDown = true;
-      hasMoved = false;
-      wTrack.style.scrollSnapType = "none";
-      wTrack.style.scrollBehavior = "auto";
-      wTrack.classList.add("is-dragging");
-      startX = e.pageX - wTrack.offsetLeft;
-      scrollLeftVal = wTrack.scrollLeft;
-    });
-
-    wTrack.addEventListener("mouseleave", () => {
-      if (isDown) endDrag();
-    });
-
-    wTrack.addEventListener("mouseup", () => {
-      if (isDown) endDrag();
-    });
-
-    wTrack.addEventListener("mousemove", (e) => {
-      if (!isDown) return;
-      e.preventDefault();
-      const x = e.pageX - wTrack.offsetLeft;
-      const walk = (x - startX) * 1.5; // Drag sensitivity multiplier
-      if (Math.abs(walk) > 5) {
-        hasMoved = true;
-      }
-      wTrack.scrollLeft = scrollLeftVal - walk;
-    });
-
-    // Disable default browser image/link drag behavior inside the track
-    wTrack.addEventListener("dragstart", (e) => {
-      e.preventDefault();
-    });
-
-    // Prevent clicks when dragging
-    wTrack.addEventListener("click", (e) => {
-      if (hasMoved) {
-        e.preventDefault();
-        e.stopPropagation();
-      }
-    }, true);
-
-    const endDrag = () => {
-      isDown = false;
-      wTrack.classList.remove("is-dragging");
-      wTrack.style.scrollSnapType = "";
-      wTrack.style.scrollBehavior = "";
-      
-      const i = clamp(Math.round(wTrack.scrollLeft / step()), 0, slides.length - 1);
-      go(i);
-      
-      // Update dots immediately on drag end
-      dots.forEach((d, j) => d.classList.toggle("is-active", j === i));
-      current = i;
-    };
-  }
 
   /* ---------- amenities carousel (one slide per category, 1:1) ---------- */
   const amSlides = $$(".amenities__slide");
@@ -438,15 +533,11 @@
       amButtons[amIndex]?.classList.add("is-active");
       if (amCounter) amCounter.querySelector("strong").textContent = pad(amIndex + 1);
 
-      // keep the active category pill in view within the rail
+      // Update our custom active label in the selector card
       const active = amButtons[amIndex];
-      if (active && amRail) {
-        const railLeft = amRail.getBoundingClientRect().left;
-        const btnLeft = active.getBoundingClientRect().left;
-        amRail.scrollTo({
-          left: amRail.scrollLeft + (btnLeft - railLeft) - amRail.clientWidth / 2 + active.clientWidth / 2,
-          behavior: "smooth"
-        });
+      const activeLabel = document.getElementById("amActiveLabel");
+      if (activeLabel && active) {
+        activeLabel.textContent = active.getAttribute("title") || "";
       }
     };
 
@@ -899,4 +990,69 @@
       if (sel && [...sel.options].some((o) => o.value === val)) sel.value = val;
     });
   });
+
+  /* ---------- Balcony Views Day/Night Slider ---------- */
+  const initViewsSlider = () => {
+    const slider = document.getElementById("viewsSlider");
+    const overlay = document.getElementById("viewsOverlay");
+    const handle = document.getElementById("viewsHandle");
+    
+    if (!slider || !overlay || !handle) return;
+    
+    let isDragging = false;
+    
+    const updateSlider = (x) => {
+      const rect = slider.getBoundingClientRect();
+      const pct = Math.max(0, Math.min(100, ((x - rect.left) / (rect.width || 1)) * 100));
+      
+      overlay.style.width = `${pct}%`;
+      handle.style.left = `${pct}%`;
+      
+      // Update image width property to keep the image centered without squeezing
+      overlay.style.setProperty('--container-width', `${rect.width}px`);
+    };
+    
+    const startDrag = (e) => {
+      isDragging = true;
+      overlay.style.transition = "none";
+      handle.style.transition = "none";
+      
+      const clientX = e.type.startsWith('touch') ? e.touches[0].clientX : e.clientX;
+      updateSlider(clientX);
+      
+      // Prevent browser text selection or scrolling while dragging starts
+      if (e.cancelable) e.preventDefault();
+    };
+    
+    const drag = (e) => {
+      if (!isDragging) return;
+      const clientX = e.type.startsWith('touch') ? e.touches[0].clientX : e.clientX;
+      updateSlider(clientX);
+    };
+    
+    const stopDrag = () => {
+      isDragging = false;
+    };
+    
+    // Desktop mouse events
+    slider.addEventListener("mousedown", startDrag);
+    window.addEventListener("mousemove", drag);
+    window.addEventListener("mouseup", stopDrag);
+    
+    // Mobile touch events
+    slider.addEventListener("touchstart", startDrag, { passive: false });
+    window.addEventListener("touchmove", drag, { passive: true });
+    window.addEventListener("touchend", stopDrag);
+    window.addEventListener("touchcancel", stopDrag);
+    
+    // Resize handler to update image width variable
+    const onResize = () => {
+      const rect = slider.getBoundingClientRect();
+      overlay.style.setProperty('--container-width', `${rect.width}px`);
+    };
+    window.addEventListener("resize", onResize);
+    onResize();
+  };
+  
+  initViewsSlider();
 })();
