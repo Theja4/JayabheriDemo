@@ -890,6 +890,9 @@ button { font-family: inherit; cursor: pointer; }
   .gallery__viewport {
     aspect-ratio: 4 / 3;
   }
+  .gallery__dots {
+    display: none !important;
+  }
 }
 @media (max-width: 640px) {
   .gallery__viewport {
