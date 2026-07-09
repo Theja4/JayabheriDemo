@@ -195,7 +195,7 @@ button { font-family: inherit; cursor: pointer; }
   height: calc(116px - 80px * var(--nav-shrink));
   width: auto; display: block;
   transition: opacity .45s var(--ease-lux);
-  margin-top: calc(12px * (1 - var(--nav-shrink)));
+  margin-top: calc(48px * (1 - var(--nav-shrink)));
 }
 .nav__logo--light { position: absolute; left: 0; top: 0; filter: brightness(0) invert(1); opacity: 1; }
 .nav__logo--dark { opacity: 0; }
