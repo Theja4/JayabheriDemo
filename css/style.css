@@ -195,6 +195,7 @@ button { font-family: inherit; cursor: pointer; }
   height: calc(116px - 80px * var(--nav-shrink));
   width: auto; display: block;
   transition: opacity .45s var(--ease-lux);
+  margin-top: calc(12px * (1 - var(--nav-shrink)));
 }
 .nav__logo--light { position: absolute; left: 0; top: 0; filter: brightness(0) invert(1); opacity: 1; }
 .nav__logo--dark { opacity: 0; }
@@ -2510,15 +2511,7 @@ button { font-family: inherit; cursor: pointer; }
   padding-bottom: 40px; border-bottom: 1px solid rgba(255,255,255,.12); margin-bottom: 44px;
 }
 .footer__brand { display: grid; gap: 22px; }
-.footer__logo { height: 52px; width: auto; }
-.footer__social { display: flex; gap: 12px; }
-.footer__social a {
-  width: 38px; height: 38px; border-radius: 50%;
-  display: grid; place-items: center;
-  border: 1px solid rgba(255,255,255,.28); color: #fff;
-  transition: all .3s;
-}
-.footer__social a:hover { background: #fff; color: var(--black); }
+.footer__logo { height: 114px; width: auto; }
 .footer__news { width: min(480px, 100%); }
 .footer__news label { display: block; font-size: 14px; color: #fff; margin-bottom: 12px; }
 .footer__newsfield {
