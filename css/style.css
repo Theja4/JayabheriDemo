@@ -63,6 +63,12 @@
 /* ---------- base ---------- */
 *, *::before, *::after { box-sizing: border-box; }
 html { scroll-behavior: smooth; scroll-padding-top: calc(var(--util-h) + var(--nav-h) + 14px); }
+
+/* Lenis inertial scroll (classes applied by the library when active) */
+html.lenis, html.lenis body { height: auto; }
+html.lenis { scroll-behavior: auto !important; } /* Lenis owns smoothing; CSS smooth would fight it */
+.lenis [data-lenis-prevent] { overscroll-behavior: contain; }
+.lenis.lenis-stopped { overflow: hidden; }
 body {
   margin: 0;
   background: var(--white);
@@ -170,8 +176,8 @@ button { font-family: inherit; cursor: pointer; }
   color: var(--nav-fg);
   border-bottom: 1px solid var(--nav-border);
   box-shadow: var(--nav-shadow);
-  backdrop-filter: blur(calc(22px * var(--nav-shrink))) saturate(1.3);
-  -webkit-backdrop-filter: blur(calc(22px * var(--nav-shrink))) saturate(1.3);
+  /* no backdrop-filter here: the scrolled background is opaque and the top-of-page
+     background is transparent, so a blur pass would run every frame yet never show */
   transition: background .45s var(--ease-lux), color .45s var(--ease-lux), border-color .45s var(--ease-lux), box-shadow .45s var(--ease-lux);
 }
 .nav[data-nav-theme="dark"] { --nav-fg: #16160f; }
@@ -243,6 +249,46 @@ button { font-family: inherit; cursor: pointer; }
   padding: 15px 0; border-bottom: 1px solid var(--line); color: var(--ink);
 }
 .drawer__foot { display: flex; flex-direction: column; gap: 12px; }
+
+/* ---------- mobile sticky action bar ---------- */
+.stickybar {
+  position: fixed; left: 0; right: 0; bottom: 0; z-index: 90;
+  display: none; align-items: center; gap: 12px;
+  padding: 10px 16px calc(10px + env(safe-area-inset-bottom, 0px));
+  background: rgba(10, 10, 8, .94);
+  /* no backdrop-filter: behind a 94%-opaque fill it is imperceptible,
+     but it costs a blur pass on every mobile scroll frame */
+  border-top: 1px solid rgba(255, 255, 255, .1);
+}
+.stickybar__price { display: grid; gap: 1px; margin-right: auto; line-height: 1.25; }
+.stickybar__price strong {
+  font-family: var(--font-display); font-weight: 600;
+  font-size: 17px; letter-spacing: .02em; color: #f3e7c4;
+}
+.stickybar__price sup { font-size: .6em; }
+.stickybar__price span {
+  font-size: 9px; font-weight: 600; letter-spacing: .22em;
+  text-transform: uppercase; color: rgba(255, 255, 255, .62);
+  white-space: nowrap;
+}
+.stickybar__icon {
+  width: 44px; height: 44px; border-radius: 50%; flex: none;
+  display: grid; place-items: center;
+  color: #fff; border: 1px solid rgba(255, 255, 255, .28);
+}
+.stickybar__cta {
+  border: 0; border-radius: var(--pill); padding: 14px 20px;
+  white-space: nowrap;
+  font-family: var(--font-label); font-size: 11px; font-weight: 600;
+  letter-spacing: .14em; text-transform: uppercase;
+  background: var(--gold); color: #fff;
+  box-shadow: 0 8px 24px rgba(160, 138, 92, .35);
+}
+@media (max-width: 860px) {
+  .stickybar { display: flex; }
+  /* keep the last of the footer reachable above the fixed bar */
+  .footer { padding-bottom: 76px; }
+}
 
 /* ---------- hero (reference format) ---------- */
 .hero {
@@ -401,8 +447,9 @@ button { font-family: inherit; cursor: pointer; }
   /* strip to essentials: highlight location + price, drop the rest */
   .hero__note { display: none; }
   .hero__title { font-size: clamp(30px, 9vw, 46px); }
-  /* button is gone -> text lower, plus breathing room from the left edge */
-  .hero__inner { width: 100%; padding-inline: 30px; padding-bottom: clamp(34px, 6vh, 56px); }
+  /* button is gone -> text lower, plus breathing room from the left edge;
+     extra bottom padding clears the fixed sticky action bar */
+  .hero__inner { width: 100%; padding-inline: 30px; padding-bottom: calc(clamp(10px, 2vh, 20px) + 76px); }
 }
 
 /* ---------- intro (cream · cinematic) ---------- */
@@ -525,6 +572,10 @@ button { font-family: inherit; cursor: pointer; }
   }
   /* keep the pinned composition within one viewport */
   .intro.is-cinematic .intro__spec-grid { margin-top: clamp(20px, 3vh, 40px); }
+  /* own compositor layers: the scroll choreography re-filters/re-clips cached
+     textures on the GPU instead of repainting the section every frame */
+  .intro.is-cinematic .intro-stat { will-change: transform, opacity, filter; }
+  .intro.is-cinematic .intro__tower-clip { will-change: clip-path; }
   .intro.is-cinematic .intro__tower { height: min(62vh, 640px); }
   .intro.is-cinematic .intro__head .h-display { line-height: 1.22; }
   /* p=0 states (rAF then drives them; prevents a flash before JS runs) */

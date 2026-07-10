@@ -42,7 +42,7 @@
   </header>
 
   <!-- Mobile drawer -->
-  <div class="drawer" id="drawer" aria-hidden="true">
+  <div class="drawer" id="drawer" aria-hidden="true" data-lenis-prevent>
     <nav class="drawer__links" aria-label="Mobile">
       <a href="#overview">Overview</a>
       <a href="#amenities">Amenities</a>
@@ -61,8 +61,8 @@
   <!-- ======= HERO ======= -->
   <section class="hero" id="top" data-nav-theme="light">
     <div class="hero__media">
-      <img class="hero__poster hero__poster--wide" src="assets/images/stills/hero-pinnacle.jpg" alt="Jayabheri The Pinnacle twin towers at dusk" fetchpriority="high">
-      <img class="hero__poster hero__poster--tall" src="assets/images/stills/hero-pinnacle-mobile.jpg" alt="" aria-hidden="true">
+      <img class="hero__poster hero__poster--wide" src="assets/images/stills/hero-pinnacle.jpg" alt="Jayabheri The Pinnacle twin towers at dusk" fetchpriority="high" srcset="assets/images/opt/stills/hero-pinnacle-480.webp 480w, assets/images/opt/stills/hero-pinnacle-960.webp 960w, assets/images/opt/stills/hero-pinnacle-1600.webp 1600w, assets/images/opt/stills/hero-pinnacle-1672.webp 1672w" sizes="100vw" data-thumb="assets/images/opt/stills/hero-pinnacle-480.webp" data-full="assets/images/opt/stills/hero-pinnacle-1672.webp" decoding="async" data-lqip style="background:url(data:image/webp;base64,UklGRoQAAABXRUJQVlA4IHgAAADwAwCdASoYAA0APwFIu1grIqckmAFgIAlsAJ0ygANSs++DaefXxnQAAP67rmeCaNQCPrpZgv+rSu5KWZpTMYQaY0yR/nNhXDPWEpI5J9yk3N2rLq4RLjXiU0qdD4fVOBgwhBZB5YQWioMpvLWWr6tK4lmujHA8wAA=) center/cover no-repeat">
+      <img class="hero__poster hero__poster--tall" src="assets/images/stills/hero-pinnacle-mobile.jpg" alt="" aria-hidden="true" srcset="assets/images/opt/stills/hero-pinnacle-mobile-480.webp 480w, assets/images/opt/stills/hero-pinnacle-mobile-900.webp 900w" sizes="100vw" data-thumb="assets/images/opt/stills/hero-pinnacle-mobile-480.webp" data-full="assets/images/opt/stills/hero-pinnacle-mobile-900.webp" decoding="async" data-lqip style="background:url(data:image/webp;base64,UklGRsIAAABXRUJQVlA4ILYAAABwBQCdASoYABkAPulkp06pJaOiN/qoASAdCWYAnTKDNtBJKxF+l8oekIYAhuDL+MW5/j8AAP7Y9ETeRWZg38tAFD3UdiT6Ae1j61HwpKULBqHxZGY7U9GzYbEWwV8xXEjyplhOvYe6q7E6KtQj8ei9IYoaOovpA/VeKg+jeMnEHo2PDZTcT2ZyUuMES4/MYf0kk+KYFGz40PJ+CD9lWOKyxjNDNxsiaMdRnxxydCSpgnaP75AAAA==) center/cover no-repeat">
     </div>
     <div class="hero__shade"></div>
 
@@ -131,7 +131,7 @@
               </div>
               <figure class="intro__tower intro__fx">
                 <div class="intro__tower-clip">
-                  <img src="assets/images/gallery/14.webp" alt="Jayabheri The Pinnacle twin towers">
+                  <img src="assets/images/gallery/14.webp" alt="Jayabheri The Pinnacle twin towers" srcset="assets/images/opt/gallery/14-480.webp 480w, assets/images/opt/gallery/14-960.webp 960w, assets/images/opt/gallery/14-1600.webp 1600w, assets/images/opt/gallery/14-2400.webp 2400w" sizes="(min-width: 1081px) 40vw, 92vw" data-thumb="assets/images/opt/gallery/14-480.webp" data-full="assets/images/opt/gallery/14-2400.webp" decoding="async" data-lqip style="background:url(data:image/webp;base64,UklGRogAAABXRUJQVlA4IHwAAACwAwCdASoYAA4ALsGAwGAjqysrCwDAS2AE6AIVJ9m2OCZ/2a0+AAD+sU5C0tMyfjJ2T5rM9KRAnQRNW6+GdQK7Ovzsx98OCZt+frJ4D7Vea1eGbd+ztuhP8HX0qgQnTAUlPPVN8jtC+iBp+Duwq8bfQmKJCzRXIYhwPwAA) center/cover no-repeat">
                   <span class="intro__shine" aria-hidden="true"></span>
                 </div>
               </figure>
@@ -162,8 +162,8 @@
     <section class="discover">
       <div class="container">
         <div class="discover__media reveal" id="discoverCard">
-          <video muted loop playsinline preload="metadata" poster="assets/images/stills/aerial-club.jpg" id="discoverVideo">
-            <source src="assets/video/film.mp4" type="video/mp4">
+          <video muted loop playsinline preload="none" poster="assets/images/stills/aerial-club.jpg" id="discoverVideo">
+            <source src="assets/video/opt/film.mp4" type="video/mp4">
           </video>
           <button class="btn btn--glass discover__play" id="discoverPlay" aria-haspopup="dialog" aria-controls="discoverPlayer">
             <svg viewBox="0 0 24 24" width="13" height="13" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>
@@ -179,8 +179,8 @@
     <div class="discover-player" id="discoverPlayer" aria-hidden="true" role="dialog" aria-modal="true" aria-label="Discover the Project video">
       <div class="discover-player__card" role="document">
         <button class="discover-player__close" id="discoverPlayerClose" aria-label="Close video">&times;</button>
-        <video class="discover-player__video" id="discoverPlayerVideo" controls playsinline preload="metadata" poster="assets/images/stills/aerial-club.jpg">
-          <source src="assets/video/film.mp4" type="video/mp4">
+        <video class="discover-player__video" id="discoverPlayerVideo" controls playsinline preload="none" poster="assets/images/stills/aerial-club.jpg">
+          <source src="assets/video/opt/film.mp4" type="video/mp4">
         </video>
       </div>
     </div>
@@ -198,7 +198,7 @@
             height="2104"
             loading="lazy"
             decoding="async"
-          >
+           srcset="assets/images/opt/clubhouse/the-club-480.webp 480w, assets/images/opt/clubhouse/the-club-960.webp 960w, assets/images/opt/clubhouse/the-club-1600.webp 1600w, assets/images/opt/clubhouse/the-club-2400.webp 2400w" sizes="(min-width: 861px) 55vw, 100vw" data-thumb="assets/images/opt/clubhouse/the-club-480.webp" data-full="assets/images/opt/clubhouse/the-club-2400.webp" data-lqip style="background:url(data:image/webp;base64,UklGRswBAABXRUJQVlA4WAoAAAAQAAAAFwAAFAAAQUxQSOAAAAABgGTbtmnnfEYtsJ3670BUS0ldsG3btm3btm3bdk58vxoQERMAbFUuf9Fjg4iD80JraSYBVX688RkRccryXxrlhx/45/RvVDGD9G38NwsAhAwzl96QVB0AhpGdP/r4gjnJ/ds74tshogeA+uL1aLuTdeEm4oCzoS/2mnRiOACoJKw9XicVNU+O9zTMfOCvgQASztGNFR3rT/j/UBqo2CM778oo0i5swVRRVj47Hi51qK5RRAcDWxeXDkZ3x0QPZ7U9OWbIzhddGhUiY8IC4/NTWrtGFzcOT89OTx8eX2zpAFZQOCDGAAAAkAUAnQEqGAAVAD8BaKlPqyWjojAYDAFgIAlAGULMAMIE0SGABT9Ex1rh+1LmdfB6DJswSAAA/stGBzboqMh/z0ZMcURCkrl7ZVWXn9JooRCFXwUaI0iG3Wf/LJZRlv1Dh/NQmG+0JWaVeCqsckUkvV+tlhOIKhhofq+VAbV8qCAxPl2NkEfydyOFGi8KgXhj5WRLoPMIHolwP5yMALoODAx1Cp4uyVApjAIwygLSrMuuYp3phLdQGwVQQZr7+OIJPEHWMAAA) center/cover no-repeat">
         </div>
         <div class="club__content">
           <h2 class="club__title" aria-label="The Club">
@@ -276,7 +276,7 @@
           
           <!-- Slide 0: The Club (Exterior) -->
           <div class="amenities__slide is-active" data-index="0" data-group="The Club">
-            <video class="amenities__bg" autoplay loop muted playsinline>
+            <video class="amenities__bg" loop muted playsinline preload="none" poster="assets/video/opt/clubhouse-poster.jpg" data-autoplay-visible>
               <source src="assets/video/clubhouse-loop.mp4" type="video/mp4">
             </video>
             <div class="amenities__card">
@@ -288,7 +288,7 @@
 
           <!-- Slide 2: Infinity Pool (Day) -->
           <div class="amenities__slide" data-index="2" data-group="Infinity Pool">
-            <img src="assets/images/clubhouse/pool.webp" alt="Infinity Pool Day" class="amenities__bg" loading="lazy">
+            <img src="assets/images/clubhouse/pool.webp" alt="Infinity Pool Day" class="amenities__bg" loading="lazy" srcset="assets/images/opt/clubhouse/pool-480.webp 480w, assets/images/opt/clubhouse/pool-960.webp 960w, assets/images/opt/clubhouse/pool-1600.webp 1600w, assets/images/opt/clubhouse/pool-2400.webp 2400w" sizes="100vw" data-thumb="assets/images/opt/clubhouse/pool-480.webp" data-full="assets/images/opt/clubhouse/pool-2400.webp" decoding="async" data-lqip style="background:url(data:image/webp;base64,UklGRpQAAABXRUJQVlA4IIgAAADwAwCdASoYAA4APwForE6rJiQiMAgBYCAJQBibA+UEjTjcwcgtZqZgAP5A8Z9sT1qtPgZFFVKA3PjOHJEyC17iY80UhrU4pnZGKkd1xofD/xfdmpVwyy+n16ze9SwJE9ar46sjlb76iT0+vN0tKiFsh/sYN93SJQlVb6K7XHFAfFYVOOwTgAAA) center/cover no-repeat">
             <div class="amenities__card">
               <span class="amenities__card-kicker">Infinity Pool</span>
               <h3 class="amenities__card-title">The Sky Pool</h3>
@@ -298,7 +298,7 @@
 
           <!-- Slide 4: Fitness Studio (Gym) -->
           <div class="amenities__slide" data-index="4" data-group="Fitness Studio">
-            <img src="assets/images/clubhouse/gym.webp" alt="Fitness Studio Gym" class="amenities__bg" loading="lazy">
+            <img src="assets/images/clubhouse/gym.webp" alt="Fitness Studio Gym" class="amenities__bg" loading="lazy" srcset="assets/images/opt/clubhouse/gym-480.webp 480w, assets/images/opt/clubhouse/gym-960.webp 960w, assets/images/opt/clubhouse/gym-1600.webp 1600w, assets/images/opt/clubhouse/gym-2400.webp 2400w" sizes="100vw" data-thumb="assets/images/opt/clubhouse/gym-480.webp" data-full="assets/images/opt/clubhouse/gym-2400.webp" decoding="async" data-lqip style="background:url(data:image/webp;base64,UklGRnoAAABXRUJQVlA4IG4AAADQAwCdASoYAA0APwFssE+rJiSiMAgBYCAJZQC+SCGrtKnCpotUoqgA/uMq74+vWMMLaJVEQfNmKlz8CgaKQE1r4QJRE1pJjWWXV8cL/arO2dnctHGYRummG8sFDv0FzW9so1RhKOO/zOLUqLAAAA==) center/cover no-repeat">
             <div class="amenities__card">
               <span class="amenities__card-kicker">Fitness Studio</span>
               <h3 class="amenities__card-title">State-of-the-Art Gym</h3>
@@ -308,7 +308,7 @@
 
           <!-- Slide 6: Spa -->
           <div class="amenities__slide" data-index="6" data-group="Spa">
-            <img src="assets/images/clubhouse/spa.webp" alt="Spa" class="amenities__bg" loading="lazy">
+            <img src="assets/images/clubhouse/spa.webp" alt="Spa" class="amenities__bg" loading="lazy" srcset="assets/images/opt/clubhouse/spa-480.webp 480w, assets/images/opt/clubhouse/spa-960.webp 960w, assets/images/opt/clubhouse/spa-1600.webp 1600w, assets/images/opt/clubhouse/spa-2400.webp 2400w" sizes="100vw" data-thumb="assets/images/opt/clubhouse/spa-480.webp" data-full="assets/images/opt/clubhouse/spa-2400.webp" decoding="async" data-lqip style="background:url(data:image/webp;base64,UklGRngAAABXRUJQVlA4IGwAAACwAwCdASoYAAwAPwFsrU8rJiQiMAgBYCAJZQAAXi5ZAQ00STh7AAD811MQxcFni1jKF2dX+BXkd9a1kK0ga3XcarPpek7PTeSa59PCDgYKSt9i22N09iRDVb7AEH2lrgoPG6joe5pKF8fAAAA=) center/cover no-repeat">
             <div class="amenities__card">
               <span class="amenities__card-kicker">Spa & Wellness</span>
               <h3 class="amenities__card-title">The Sanctuary Spa</h3>
@@ -318,7 +318,7 @@
 
           <!-- Slide 7: Mini Theatre -->
           <div class="amenities__slide" data-index="7" data-group="Mini Theatre">
-            <img src="assets/images/clubhouse/theatre.webp" alt="Mini Theatre" class="amenities__bg" loading="lazy">
+            <img src="assets/images/clubhouse/theatre.webp" alt="Mini Theatre" class="amenities__bg" loading="lazy" srcset="assets/images/opt/clubhouse/theatre-480.webp 480w, assets/images/opt/clubhouse/theatre-960.webp 960w, assets/images/opt/clubhouse/theatre-1600.webp 1600w, assets/images/opt/clubhouse/theatre-2400.webp 2400w" sizes="100vw" data-thumb="assets/images/opt/clubhouse/theatre-480.webp" data-full="assets/images/opt/clubhouse/theatre-2400.webp" decoding="async" data-lqip style="background:url(data:image/webp;base64,UklGRnoAAABXRUJQVlA4IG4AAAAwBACdASoYAA0APwForE6rJaQiMAgBYCAJZQCdABuPZb363LqoypQWsAAA/rxSO4wkIaBAcCVrq0c8QEyn8LPAz+TqDxfZZxzcOpJewh3+TfabKk354T2tGGeI8Psrwcx+JIJZUSNi9OXjhwAAAA==) center/cover no-repeat">
             <div class="amenities__card">
               <span class="amenities__card-kicker">Mini Theatre</span>
               <h3 class="amenities__card-title">Private Preview Theatre</h3>
@@ -328,7 +328,7 @@
 
           <!-- Slide 8: Sports Zone (Outdoor) -->
           <div class="amenities__slide" data-index="8" data-group="Sports Zone">
-            <img src="assets/images/clubhouse/sports.webp" alt="Outdoor Sports" class="amenities__bg" loading="lazy">
+            <img src="assets/images/clubhouse/sports.webp" alt="Outdoor Sports" class="amenities__bg" loading="lazy" srcset="assets/images/opt/clubhouse/sports-480.webp 480w, assets/images/opt/clubhouse/sports-960.webp 960w, assets/images/opt/clubhouse/sports-1600.webp 1600w, assets/images/opt/clubhouse/sports-2400.webp 2400w" sizes="100vw" data-thumb="assets/images/opt/clubhouse/sports-480.webp" data-full="assets/images/opt/clubhouse/sports-2400.webp" decoding="async" data-lqip style="background:url(data:image/webp;base64,UklGRmwAAABXRUJQVlA4IGAAAADQAwCdASoYAA4APwFqrU8rJiQiMAgBYCAJQBYdhEAM3nTo+R3/qBAA/uwbmhpKpGz+Z+bp9SZ6gRJdyruKD8HDW+G1u67L32E4XPG8MTnWadbtXSbMY5skm+lFZ8ZYAAA=) center/cover no-repeat">
             <div class="amenities__card">
               <span class="amenities__card-kicker">Sports Zone</span>
               <h3 class="amenities__card-title">Active Sports Courts</h3>
@@ -338,7 +338,7 @@
 
           <!-- Slide 10: Party Hall -->
           <div class="amenities__slide" data-index="10" data-group="Party Hall">
-            <img src="assets/images/clubhouse/party.webp" alt="Party Hall" class="amenities__bg" loading="lazy">
+            <img src="assets/images/clubhouse/party.webp" alt="Party Hall" class="amenities__bg" loading="lazy" srcset="assets/images/opt/clubhouse/party-480.webp 480w, assets/images/opt/clubhouse/party-960.webp 960w, assets/images/opt/clubhouse/party-1600.webp 1600w, assets/images/opt/clubhouse/party-2400.webp 2400w" sizes="100vw" data-thumb="assets/images/opt/clubhouse/party-480.webp" data-full="assets/images/opt/clubhouse/party-2400.webp" decoding="async" data-lqip style="background:url(data:image/webp;base64,UklGRogAAABXRUJQVlA4IHwAAAAwBACdASoYAA4APwFqrE6rJiQiMAgBYCAJZQC2yCFJ3WJswY131cgDx+AA/tMrfmyejfBa4I0xJAtL5LZRYrbcVmX8AYoeP2ny71KLGBcnLH6FmmmuB1kijGz6O9AX53MWV//jwLDXGUhLyamgTdR+xpZVlACt9DqQgqAA) center/cover no-repeat">
             <div class="amenities__card">
               <span class="amenities__card-kicker">Party Hall</span>
               <h3 class="amenities__card-title">Banquet & Party Hall</h3>
@@ -348,7 +348,7 @@
 
           <!-- Slide 11: Cafeteria -->
           <div class="amenities__slide" data-index="11" data-group="Cafeteria">
-            <img src="assets/images/clubhouse/cafe.webp" alt="Cafeteria" class="amenities__bg" loading="lazy">
+            <img src="assets/images/clubhouse/cafe.webp" alt="Cafeteria" class="amenities__bg" loading="lazy" srcset="assets/images/opt/clubhouse/cafe-480.webp 480w, assets/images/opt/clubhouse/cafe-960.webp 960w, assets/images/opt/clubhouse/cafe-1600.webp 1600w, assets/images/opt/clubhouse/cafe-2400.webp 2400w" sizes="100vw" data-thumb="assets/images/opt/clubhouse/cafe-480.webp" data-full="assets/images/opt/clubhouse/cafe-2400.webp" decoding="async" data-lqip style="background:url(data:image/webp;base64,UklGRpYAAABXRUJQVlA4IIoAAADQAwCdASoYAA0APwFqrU8rJiQiMAgBYCAJYwCdAdwA6xOaoKSnP4AA4C2cJZ9KgcC9Ple7Su0G93aYXpF3Xeojfjs9vb3w+WHmPZvcEMr/NwwWIBMyGSFkD4nZolSpu2aTh+fk5PNzLjVpWwp1iXxPkPo08BmosMzLAFKq7alRsI5/voT/1kiiAAA=) center/cover no-repeat">
             <div class="amenities__card">
               <span class="amenities__card-kicker">Cafeteria</span>
               <h3 class="amenities__card-title">Residents' Café</h3>
@@ -358,7 +358,7 @@
 
           <!-- Slide 12: Guest Suites -->
           <div class="amenities__slide" data-index="12" data-group="Guest Suites">
-            <img src="assets/images/clubhouse/guest-room.webp" alt="Guest Suites" class="amenities__bg" loading="lazy">
+            <img src="assets/images/clubhouse/guest-room.webp" alt="Guest Suites" class="amenities__bg" loading="lazy" srcset="assets/images/opt/clubhouse/guest-room-480.webp 480w, assets/images/opt/clubhouse/guest-room-960.webp 960w, assets/images/opt/clubhouse/guest-room-1200.webp 1200w" sizes="100vw" data-thumb="assets/images/opt/clubhouse/guest-room-480.webp" data-full="assets/images/opt/clubhouse/guest-room-1200.webp" decoding="async" data-lqip style="background:url(data:image/webp;base64,UklGRn4AAABXRUJQVlA4IHIAAADwAwCdASoYAA4APwFqrU8rJiQiMAgBYCAJYwCdAB449XcF4xlCoQYAAPOwPx3cm5C2zG+eDrFhQ23qnV+TgJSd9moY5979mMB2ZTWbS8QzqEZ2hCI2E/W6aqWXfFe11woNb4YHcns9I1K8GvAXVfoAAAA=) center/cover no-repeat">
             <div class="amenities__card">
               <span class="amenities__card-kicker">Guest Suites</span>
               <h3 class="amenities__card-title">Luxury Guest Suites</h3>
@@ -384,10 +384,10 @@
 
     <!-- ======= THE GREENERY SECTION ======= -->
     <section class="greenery reveal" id="greenery" data-nav-theme="dark">
-      <video class="greenery__video" autoplay loop muted playsinline>
-        <source src="assets/video/greenery-loop.mp4" type="video/mp4">
+      <video class="greenery__video" loop muted playsinline preload="none" poster="assets/video/opt/greenery-poster.jpg" data-autoplay-visible>
+        <source src="assets/video/opt/greenery-loop.mp4" type="video/mp4">
       </video>
-      <img src="assets/images/gallery/leaves-frame.png" alt="" class="greenery__frame">
+      <img src="assets/images/gallery/leaves-frame.png" alt="" class="greenery__frame" srcset="assets/images/opt/gallery/leaves-frame-480.webp 480w, assets/images/opt/gallery/leaves-frame-960.webp 960w, assets/images/opt/gallery/leaves-frame-1376.webp 1376w" sizes="100vw" data-thumb="assets/images/opt/gallery/leaves-frame-480.webp" data-full="assets/images/opt/gallery/leaves-frame-1376.webp" decoding="async" loading="lazy" data-lqip style="background:url(data:image/webp;base64,UklGRtABAABXRUJQVlA4WAoAAAAQAAAAFwAADAAAQUxQSDkBAAAA0+PK0K+lyPL71ebMy9fs3IDM///viYbJ2d3Xpcu0s9Tt4/r/3c7d1ej//N2Kp+3hwrXl5Z6x16OIzf/Rou7YqbjVq4yn7tbUPaO+uzx12ocEZptmIEtDHa+6RWrs48aQAAsfCQAXQRkABA0IAQABACsxAxOLpF4MAgEAAAEBAQABAQECAQMCAAAAAQAAAQABAgICAwECBAEAAAIBAAEAAAIDAgIEAwECCgYCAAEBAAICAAABAgEDAQABAQEAAA4KdJOLUA8lMwAABSUTABMDAABKbBAbWZxq1tPE266/2GM0KdV9VuNsukyEzZ3OxMzGytHe4M3v18ubduK+4v//+nqSr8XZ5ce1yuPq0L60wNTRy8y85/v8rrXtub7A3+jGdfPPu3+G5fLh4cKg4v+xOcDx46y70d+FAFZQOCBwAAAAsAMAnQEqGAANAD8BaqxOqyYkIjAIAWAgCUmACZQCcejjNg2qGwAA/u2d1SPR+ZRXfZtT91JFPtL+kM8hUksAIA/zevscWsfXk/MkZgAyy9BTbR2VBpu83/BtaOccI6a+i9OdXggBVDN6wZSyiEAAAA==) center/cover no-repeat">
       <div class="greenery__content reveal">
         <h2 class="greenery__title">Pinnacle Gardens</h2>
         <p class="greenery__subtitle">Lush landscaped botanical reserves and green canopy pathways surrounding the twin towers</p>
@@ -419,12 +419,12 @@
         <div class="views__slider" id="viewsSlider">
           <!-- Day View (Base Layer) -->
           <div class="views__layer views__layer--base">
-            <img src="assets/images/gallery/b0.webp" alt="Balcony View at Dawn" class="views__img">
+            <img src="assets/images/gallery/b0.webp" alt="Balcony View at Dawn" class="views__img" srcset="assets/images/opt/gallery/b0-480.webp 480w, assets/images/opt/gallery/b0-960.webp 960w, assets/images/opt/gallery/b0-1600.webp 1600w, assets/images/opt/gallery/b0-2400.webp 2400w" sizes="100vw" data-thumb="assets/images/opt/gallery/b0-480.webp" data-full="assets/images/opt/gallery/b0-2400.webp" decoding="async" loading="lazy" data-lqip style="background:url(data:image/webp;base64,UklGRpgAAABXRUJQVlA4IIwAAADQAwCdASoYAA4APwFqrU8rJiQiMAgBYCAJYgCdACGuqv9yrbwNfCwA/lWuJEaDo6Mrtm2YKH8fJKXYOaliEatb1+FM1QtXKuXWF2HbHQQr1mDTJC3zEk/kl8hkoTYWfyUoNYsDD+ziMFtjabbn/NfRifAbaxDmVsVz3Ar0PlCc86SrAAW5fHURcsAAAA==) center/cover no-repeat">
           </div>
           
           <!-- Dusk View (Overlay Layer) -->
           <div class="views__layer views__layer--overlay" id="viewsOverlay">
-            <img src="assets/images/gallery/b1.webp" alt="Balcony View at Dusk" class="views__img">
+            <img src="assets/images/gallery/b1.webp" alt="Balcony View at Dusk" class="views__img" srcset="assets/images/opt/gallery/b1-480.webp 480w, assets/images/opt/gallery/b1-960.webp 960w, assets/images/opt/gallery/b1-1600.webp 1600w, assets/images/opt/gallery/b1-2400.webp 2400w" sizes="100vw" data-thumb="assets/images/opt/gallery/b1-480.webp" data-full="assets/images/opt/gallery/b1-2400.webp" decoding="async" loading="lazy" data-lqip style="background:url(data:image/webp;base64,UklGRpIAAABXRUJQVlA4IIYAAACwAwCdASoYAA4APwFqrE6rJiQiMAgBYCAJQBOgBDmq9sVRkkBzAAD+3pjUd1I5IT6rRjQcGpH9EyZP9JPRfWs2a4lK0iUZBKqRdiHrEPQz7MZb8679Rb9y/qbd9fOIlRz7+lfwAnZUPIj2J/WxyfUkwRBw3y58I3Mtd9llgIGLGCqMauAAAA==) center/cover no-repeat">
           </div>
           
           <!-- Floating Labels -->
@@ -465,7 +465,7 @@
           </p>
         </div>
         <div class="res-selector__stage" aria-label="Interactive tower floor selector">
-          <img src="assets/images/interactive/pinnacle-towers.webp" alt="Jayabheri The Pinnacle twin towers" class="res-selector__image">
+          <img src="assets/images/interactive/pinnacle-towers.webp" alt="Jayabheri The Pinnacle twin towers" class="res-selector__image" srcset="assets/images/opt/interactive/pinnacle-towers-480.webp 480w, assets/images/opt/interactive/pinnacle-towers-960.webp 960w, assets/images/opt/interactive/pinnacle-towers-1600.webp 1600w, assets/images/opt/interactive/pinnacle-towers-2400.webp 2400w" sizes="100vw" data-thumb="assets/images/opt/interactive/pinnacle-towers-480.webp" data-full="assets/images/opt/interactive/pinnacle-towers-2400.webp" decoding="async" loading="lazy" data-lqip style="background:url(data:image/webp;base64,UklGRoYAAABXRUJQVlA4IHoAAACwAwCdASoYAA4APwFqrU8rJiQiMAgBYCAJZACdABYsb8QJtUE5VgD94pbK86n9YRCqqxdHeggo5IuuooH7GOy9j+EwXHmb+ygWgWjWMSljT/R/ErnkrJiagvb+R1DqyCJg6cYk0aNl71Xx0Og8GFoq0fH/galHjE6AAA==) center/cover no-repeat">
           <div class="res-selector__floors" id="floorHotspots" aria-label="Clickable tower floors"></div>
         </div>
       </div>
@@ -496,67 +496,67 @@
           <!-- Exterior Track -->
           <div class="gallery__track active" id="galleryTrackExterior">
             <div class="gallery__slide active">
-              <img src="assets/images/gallery/16.webp" alt="Panoramic birds eye aerial view" loading="lazy">
+              <img src="assets/images/gallery/16.webp" alt="Panoramic birds eye aerial view" loading="lazy" srcset="assets/images/opt/gallery/16-480.webp 480w, assets/images/opt/gallery/16-960.webp 960w, assets/images/opt/gallery/16-1600.webp 1600w, assets/images/opt/gallery/16-2400.webp 2400w" sizes="100vw" data-thumb="assets/images/opt/gallery/16-480.webp" data-full="assets/images/opt/gallery/16-2400.webp" decoding="async" data-lqip style="background:url(data:image/webp;base64,UklGRpgAAABXRUJQVlA4IIwAAADwAwCdASoYAA4APwForE6rJaQiMAgBYCAJZQAARIir1Uw/Nzn8yMUAAP6/Y2xLkyLG4RkF4e/h7h5b8cIxT1E+fR3vK70OEtEDR/xCTNMUpnXoUGgSb59Hgw/NI8r+S9geI+2rJ3J9ZBqXrnBg+oFC5JXhwfT1gbXnetGG1eE4VyvjvYnAz9oY4AAAAA==) center/cover no-repeat">
               <div class="gallery__caption">Panoramic Aerial View</div>
             </div>
             <div class="gallery__slide">
-              <img src="assets/images/stills/facade.jpg" alt="Residence facades with signage" loading="lazy">
+              <img src="assets/images/stills/facade.jpg" alt="Residence facades with signage" loading="lazy" srcset="assets/images/opt/stills/facade-480.webp 480w, assets/images/opt/stills/facade-960.webp 960w, assets/images/opt/stills/facade-1600.webp 1600w, assets/images/opt/stills/facade-2400.webp 2400w" sizes="100vw" data-thumb="assets/images/opt/stills/facade-480.webp" data-full="assets/images/opt/stills/facade-2400.webp" decoding="async" data-lqip style="background:url(data:image/webp;base64,UklGRnIAAABXRUJQVlA4IGYAAADQAwCdASoYAAsAPwFqrU6rJiQiMAgBYCAJYwAASpKFhJqG20RD3HgA9il7KxrMOlTVPQyWumHc1ECjgbWgpuC3faBZ4uP5dVPm5Uzk3JK36hxzySoDU4O8sPJKDtoyiwKfj3KZgAA=) center/cover no-repeat">
               <div class="gallery__caption">Grand Facade</div>
             </div>
             <div class="gallery__slide">
-              <img src="assets/images/stills/facade-dusk.jpg" alt="Twin towers facade illuminated at dusk" loading="lazy">
+              <img src="assets/images/stills/facade-dusk.jpg" alt="Twin towers facade illuminated at dusk" loading="lazy" srcset="assets/images/opt/stills/facade-dusk-480.webp 480w, assets/images/opt/stills/facade-dusk-960.webp 960w, assets/images/opt/stills/facade-dusk-1600.webp 1600w, assets/images/opt/stills/facade-dusk-2400.webp 2400w" sizes="100vw" data-thumb="assets/images/opt/stills/facade-dusk-480.webp" data-full="assets/images/opt/stills/facade-dusk-2400.webp" decoding="async" data-lqip style="background:url(data:image/webp;base64,UklGRooAAABXRUJQVlA4IH4AAADwAwCdASoYAAsAPwFqrE8rJiQiMAgBYCAJZgCdABgre+cNONtsT6AAAP5xannQB29zEwdb6oPIGFpAskQWxt3vIOUo31TYfRcSNrmghJAYn1F/uIOfkZQbHuYlWfScxEaUrObQC7GAKSrTLstCuhruljgzp5etjN4yHXAAAAA=) center/cover no-repeat">
               <div class="gallery__caption">Facade at Dusk</div>
             </div>
             <div class="gallery__slide">
-              <img src="assets/images/gallery/14.webp" alt="Daytime architectural elevation" loading="lazy">
+              <img src="assets/images/gallery/14.webp" alt="Daytime architectural elevation" loading="lazy" srcset="assets/images/opt/gallery/14-480.webp 480w, assets/images/opt/gallery/14-960.webp 960w, assets/images/opt/gallery/14-1600.webp 1600w, assets/images/opt/gallery/14-2400.webp 2400w" sizes="100vw" data-thumb="assets/images/opt/gallery/14-480.webp" data-full="assets/images/opt/gallery/14-2400.webp" decoding="async" data-lqip style="background:url(data:image/webp;base64,UklGRogAAABXRUJQVlA4IHwAAACwAwCdASoYAA4ALsGAwGAjqysrCwDAS2AE6AIVJ9m2OCZ/2a0+AAD+sU5C0tMyfjJ2T5rM9KRAnQRNW6+GdQK7Ovzsx98OCZt+frJ4D7Vea1eGbd+ztuhP8HX0qgQnTAUlPPVN8jtC+iBp+Duwq8bfQmKJCzRXIYhwPwAA) center/cover no-repeat">
               <div class="gallery__caption">Day Elevation</div>
             </div>
             <div class="gallery__slide">
-              <img src="assets/images/gallery/28.webp" alt="Dusk architectural elevation" loading="lazy">
+              <img src="assets/images/gallery/28.webp" alt="Dusk architectural elevation" loading="lazy" srcset="assets/images/opt/gallery/28-480.webp 480w, assets/images/opt/gallery/28-960.webp 960w, assets/images/opt/gallery/28-1600.webp 1600w, assets/images/opt/gallery/28-2400.webp 2400w" sizes="100vw" data-thumb="assets/images/opt/gallery/28-480.webp" data-full="assets/images/opt/gallery/28-2400.webp" decoding="async" data-lqip style="background:url(data:image/webp;base64,UklGRqYAAABXRUJQVlA4IJoAAAAQBQCdASoYABsAPwFwsFCrJiSisBgIAWAgCUAXYAaQKi/EYntuZGx56S+B7sH7p8WCAP6vBiNcUbFuZgDoqhE9DqspQ+4siPYl9l3BVYD9qv2+KOQxLqt7KUr7mUtHdVASpD1XE12TN0j5FpAFDZh27vnRZC/QCUld4+KNRWyn+sw4sm8YinB1LdyMRZyCEUdOoVmISriRQAAA) center/cover no-repeat">
               <div class="gallery__caption">Dusk Elevation</div>
             </div>
             <div class="gallery__slide">
-              <img src="assets/images/stills/welcome-court.jpg" alt="Water court entrance with cascading water wall" loading="lazy">
+              <img src="assets/images/stills/welcome-court.jpg" alt="Water court entrance with cascading water wall" loading="lazy" srcset="assets/images/opt/stills/welcome-court-480.webp 480w, assets/images/opt/stills/welcome-court-960.webp 960w, assets/images/opt/stills/welcome-court-1600.webp 1600w, assets/images/opt/stills/welcome-court-2400.webp 2400w" sizes="100vw" data-thumb="assets/images/opt/stills/welcome-court-480.webp" data-full="assets/images/opt/stills/welcome-court-2400.webp" decoding="async" data-lqip style="background:url(data:image/webp;base64,UklGRoIAAABXRUJQVlA4IHYAAADwAwCdASoYAAsAPwFqrU8rJiQiMAgBYCAJYwC7ABnpliEV4w43js8AAP7jQrjvXPC+WNb2LESw6xUvSGpFn7igYy2F6rk0GFMLujfaO17kBW7xvRiksQ054zLKutHMO90ZnfpnS1EH+Y8Q5/I/q8OJxvdOgAAA) center/cover no-repeat">
               <div class="gallery__caption">The Welcome Court</div>
             </div>
             <div class="gallery__slide">
-              <img src="assets/images/stills/boulevard.jpg" alt="The gate boulevard" loading="lazy">
+              <img src="assets/images/stills/boulevard.jpg" alt="The gate boulevard" loading="lazy" srcset="assets/images/opt/stills/boulevard-480.webp 480w, assets/images/opt/stills/boulevard-960.webp 960w, assets/images/opt/stills/boulevard-1600.webp 1600w, assets/images/opt/stills/boulevard-2400.webp 2400w" sizes="100vw" data-thumb="assets/images/opt/stills/boulevard-480.webp" data-full="assets/images/opt/stills/boulevard-2400.webp" decoding="async" data-lqip style="background:url(data:image/webp;base64,UklGRoQAAABXRUJQVlA4IHgAAACQAwCdASoYAAsAPwFqrE8rJiQiMAgBYCAJYwAAJ/nrG4s8vQ8gAP5b8MrR8uQbCAD+esyvipInotrjexbRAnrLwe+Bw3BFK1DPIftHhQVBJrcj9tHLLbqvUymK4465dSjryfw2Lgng8nt7Op/FSC4Y/9ooVGnAAAA=) center/cover no-repeat">
               <div class="gallery__caption">The Arrival Boulevard</div>
             </div>
             <div class="gallery__slide">
-              <img src="assets/images/stills/dropoff.jpg" alt="Tower arrival dropoff court" loading="lazy">
+              <img src="assets/images/stills/dropoff.jpg" alt="Tower arrival dropoff court" loading="lazy" srcset="assets/images/opt/stills/dropoff-480.webp 480w, assets/images/opt/stills/dropoff-960.webp 960w, assets/images/opt/stills/dropoff-1600.webp 1600w, assets/images/opt/stills/dropoff-2400.webp 2400w" sizes="100vw" data-thumb="assets/images/opt/stills/dropoff-480.webp" data-full="assets/images/opt/stills/dropoff-2400.webp" decoding="async" data-lqip style="background:url(data:image/webp;base64,UklGRo4AAABXRUJQVlA4IIIAAADQAwCdASoYAAsAPwFqrU8rJiQiMAgBYCAJQAAJ3tqlsnd4Z9NysAAA/tNc5pWdbi4168bWLIXv1ST5oiJpFMZfnBJ839iOFMxt7BX41m8sRcbvPsan7UVIeInpZ7pn4UPRmrXjXuY65stPADl5/cfXxCZEohU2v5lB/qa/d12nAAAA) center/cover no-repeat">
               <div class="gallery__caption">Tower Drop-off</div>
             </div>
             <div class="gallery__slide">
-              <img src="assets/images/stills/pool-dusk.jpg" alt="Infinity edge pool overlooking skyline at dusk" loading="lazy">
+              <img src="assets/images/stills/pool-dusk.jpg" alt="Infinity edge pool overlooking skyline at dusk" loading="lazy" srcset="assets/images/opt/stills/pool-dusk-480.webp 480w, assets/images/opt/stills/pool-dusk-960.webp 960w, assets/images/opt/stills/pool-dusk-1600.webp 1600w, assets/images/opt/stills/pool-dusk-2400.webp 2400w" sizes="100vw" data-thumb="assets/images/opt/stills/pool-dusk-480.webp" data-full="assets/images/opt/stills/pool-dusk-2400.webp" decoding="async" data-lqip style="background:url(data:image/webp;base64,UklGRoAAAABXRUJQVlA4IHQAAADwAwCdASoYAAsAPwFsrk+rJiQiMAgBYCAJbACdMoAB341OmbUXoKJQAP68aWtclnruWmCaMJ9KLBvaIxVCNSA7InBsZRtnRtqypFz4TGxBqPBuI4zc9CWC1vEjJ8hYYpLTPadkPc7M4FDKZNa7jc2/6AAAAA==) center/cover no-repeat">
               <div class="gallery__caption">Infinity Pool at Dusk</div>
             </div>
             <div class="gallery__slide">
-              <img src="assets/images/gallery/30.webp" alt="Outdoor children play area with mounds" loading="lazy">
+              <img src="assets/images/gallery/30.webp" alt="Outdoor children play area with mounds" loading="lazy" srcset="assets/images/opt/gallery/30-480.webp 480w, assets/images/opt/gallery/30-960.webp 960w, assets/images/opt/gallery/30-1600.webp 1600w, assets/images/opt/gallery/30-2400.webp 2400w" sizes="100vw" data-thumb="assets/images/opt/gallery/30-480.webp" data-full="assets/images/opt/gallery/30-2400.webp" decoding="async" data-lqip style="background:url(data:image/webp;base64,UklGRuAAAABXRUJQVlA4INQAAADQBQCdASoYABgAPwFysVIrJqSiqAqpYCAJQBdgMaBNrP7N719XYRuEcQWvUP0DU8oiuB83+5cAAP7tRbYTFOvPXbafDWBKOuV2pMADQ4g+Uc6GWOeFhPF5Y8qSTT4wkBjth4USefhacHJiN53V2Nzok/ObKoUh9XrJjt0vB6/BXouTLd4zxEC6PgcX2nutjILmlsnkgNj525wGe2L9/Y+yVVKH2BmHiwpMm98hGZivHw5SViGHWHLPDnwhmeGLfKu/xxgDc3DcWU1d4Ehcq/vzlAAAAA==) center/cover no-repeat">
               <div class="gallery__caption">Children's Play Area</div>
             </div>
             <div class="gallery__slide">
-              <img src="assets/images/gallery/23.webp" alt="Lush central green lawn garden" loading="lazy">
+              <img src="assets/images/gallery/23.webp" alt="Lush central green lawn garden" loading="lazy" srcset="assets/images/opt/gallery/23-480.webp 480w, assets/images/opt/gallery/23-960.webp 960w, assets/images/opt/gallery/23-1600.webp 1600w, assets/images/opt/gallery/23-2400.webp 2400w" sizes="100vw" data-thumb="assets/images/opt/gallery/23-480.webp" data-full="assets/images/opt/gallery/23-2400.webp" decoding="async" data-lqip style="background:url(data:image/webp;base64,UklGRooAAABXRUJQVlA4IH4AAAAQBACdASoYAA4APwFqrE8rJiQiMAgBYCAJYwDG9BnNydGn8aHOly0WAAD+v8NPTTfBOB5uHC1vR5+xsIeVhUTwaVG4qU5eg1P+lzEQ/QqIab+LDaaN93A+RiHDJ8utKQ8n890LYr+NYGW3y/T/7j8vrxIBN+GkjTdPU8fAAAA=) center/cover no-repeat">
               <div class="gallery__caption">Lush Central Lawn</div>
             </div>
             <div class="gallery__slide">
-              <img src="assets/images/gallery/6.webp" alt="Outdoor stepped amphitheatre" loading="lazy">
+              <img src="assets/images/gallery/6.webp" alt="Outdoor stepped amphitheatre" loading="lazy" srcset="assets/images/opt/gallery/6-480.webp 480w, assets/images/opt/gallery/6-960.webp 960w, assets/images/opt/gallery/6-1600.webp 1600w, assets/images/opt/gallery/6-2400.webp 2400w" sizes="100vw" data-thumb="assets/images/opt/gallery/6-480.webp" data-full="assets/images/opt/gallery/6-2400.webp" decoding="async" data-lqip style="background:url(data:image/webp;base64,UklGRogAAABXRUJQVlA4IHwAAAAwBACdASoYAA4APwForE6rJaQiMAgBYCAJYgCdABpB39R4evuDr6LwOtAA/unf6wQvd8uPTUTVFO8KIoJVyYInx7XNvFWDTakSKu7s4TRCTMJY9aHdIXUk3Dlp7eVSkyHWiS3hiIqQRtK5fhlGN5EYWwr6nmb1jv6q7sAA) center/cover no-repeat">
               <div class="gallery__caption">Outdoor Amphitheatre</div>
             </div>
             <div class="gallery__slide">
-              <img src="assets/images/gallery/24.webp" alt="Outdoor beach volleyball sports arena" loading="lazy">
+              <img src="assets/images/gallery/24.webp" alt="Outdoor beach volleyball sports arena" loading="lazy" srcset="assets/images/opt/gallery/24-480.webp 480w, assets/images/opt/gallery/24-960.webp 960w, assets/images/opt/gallery/24-1600.webp 1600w, assets/images/opt/gallery/24-2400.webp 2400w" sizes="100vw" data-thumb="assets/images/opt/gallery/24-480.webp" data-full="assets/images/opt/gallery/24-2400.webp" decoding="async" data-lqip style="background:url(data:image/webp;base64,UklGRqIAAABXRUJQVlA4IJYAAAAwBACdASoYAA4APwFqrE6rJiQiMAgBYCAJQAB8jTbVpHMcHaaEHLun8kQA9kZoOHpluJN5e+NVRBJ3PCxiFFb1oLgv9B09CjlGCLKaAdlvsKOH9JkWL9n+GW+dIfDlNFhbJo9yz0xrOWwur5nK+iJxp4h4Uuz3erqg11qkw0HIW/+Wr/nkEHk07X+xa1b6CNIVuhwoyAA=) center/cover no-repeat">
               <div class="gallery__caption">Outdoor Sports Arena</div>
             </div>
             <div class="gallery__slide">
-              <img src="assets/images/stills/amphitheatre.jpg" alt="Landscaped outdoor amphitheatre" loading="lazy">
+              <img src="assets/images/stills/amphitheatre.jpg" alt="Landscaped outdoor amphitheatre" loading="lazy" srcset="assets/images/opt/stills/amphitheatre-480.webp 480w, assets/images/opt/stills/amphitheatre-960.webp 960w, assets/images/opt/stills/amphitheatre-1600.webp 1600w, assets/images/opt/stills/amphitheatre-2400.webp 2400w" sizes="100vw" data-thumb="assets/images/opt/stills/amphitheatre-480.webp" data-full="assets/images/opt/stills/amphitheatre-2400.webp" decoding="async" data-lqip style="background:url(data:image/webp;base64,UklGRoQAAABXRUJQVlA4IHgAAADQAwCdASoYAAsAPwFqrU6rJiQiMAgBYCAJZwAAOSZc4i7POVC0Z1AA/qYKRUpkp9sx8BVXHRdVHSctLohRC9FH4XUXKuz7kTyz1SpBU/MEsXH4dHPNhGDSZDVBrxfDwsfTaq9vm9Kt9uTxNLlTEQKID/nXyBPcvAA=) center/cover no-repeat">
               <div class="gallery__caption">The Amphitheatre</div>
             </div>
             <div class="gallery__slide">
-              <img src="assets/images/stills/skyline.jpg" alt="City skyline framed by the towers" loading="lazy">
+              <img src="assets/images/stills/skyline.jpg" alt="City skyline framed by the towers" loading="lazy" srcset="assets/images/opt/stills/skyline-480.webp 480w, assets/images/opt/stills/skyline-960.webp 960w, assets/images/opt/stills/skyline-1600.webp 1600w, assets/images/opt/stills/skyline-2400.webp 2400w" sizes="100vw" data-thumb="assets/images/opt/stills/skyline-480.webp" data-full="assets/images/opt/stills/skyline-2400.webp" decoding="async" data-lqip style="background:url(data:image/webp;base64,UklGRmwAAABXRUJQVlA4IGAAAADwAwCdASoYAAsAPwFsrU8rJiQiMAgBYCAJQBOgA3R7+jUn0u9fquYAAP50g/9J+PwqcmKemt/SXTjB2WvTAys/EzeChIMjAniiVY8D+byxSXtqI5ChFPK62x9Ry0WgAAA=) center/cover no-repeat">
               <div class="gallery__caption">Skyline Panorama</div>
             </div>
             <div class="gallery__slide">
-              <img src="assets/images/stills/aerial-towers.jpg" alt="Aerial view of the twin towers at dusk" loading="lazy">
+              <img src="assets/images/stills/aerial-towers.jpg" alt="Aerial view of the twin towers at dusk" loading="lazy" srcset="assets/images/opt/stills/aerial-towers-480.webp 480w, assets/images/opt/stills/aerial-towers-960.webp 960w, assets/images/opt/stills/aerial-towers-1600.webp 1600w, assets/images/opt/stills/aerial-towers-2400.webp 2400w" sizes="100vw" data-thumb="assets/images/opt/stills/aerial-towers-480.webp" data-full="assets/images/opt/stills/aerial-towers-2400.webp" decoding="async" data-lqip style="background:url(data:image/webp;base64,UklGRnIAAABXRUJQVlA4IGYAAAAQBACdASoYAAsAPwForE6rJaQiMAgBYCAJZwCw7BtDGlY/DCYMjoamgAD+7L5dHnOyWtDMWd+VvWmvVfyf7xfy2Vh/pF680uj22/Uw72qNmM+I4/uaTRkPK0jf8dueTwAL7jcAAAA=) center/cover no-repeat">
               <div class="gallery__caption">Aerial Towers View</div>
             </div>
           </div>
@@ -564,71 +564,71 @@
           <!-- Interior Track -->
           <div class="gallery__track" id="galleryTrackInterior">
             <div class="gallery__slide">
-              <img src="assets/images/tower/modern-lobby-greenery.jpg" alt="Double-height modern lobby with lush greenery" loading="lazy">
+              <img src="assets/images/tower/modern-lobby-greenery.jpg" alt="Double-height modern lobby with lush greenery" loading="lazy" srcset="assets/images/opt/tower/modern-lobby-greenery-480.webp 480w, assets/images/opt/tower/modern-lobby-greenery-960.webp 960w, assets/images/opt/tower/modern-lobby-greenery-1376.webp 1376w" sizes="100vw" data-thumb="assets/images/opt/tower/modern-lobby-greenery-480.webp" data-full="assets/images/opt/tower/modern-lobby-greenery-1376.webp" decoding="async" data-lqip style="background:url(data:image/webp;base64,UklGRqYAAABXRUJQVlA4IJoAAAAwBACdASoYAA0APwForE6rJaQiMAgBYCAJQBOgtQI/kYomcaIywSFwjQAA/qqBQnTxCWsIrCHx5UDeXR8KZpMZmBADVuVntEuS9ytdJiFnBPKHdCfXJ1uFdg64Cj/+gbNe//XqA/INymOIx3nHJS12ROobpnW3qIEifsUTvFxd8RW5R+TVcsSJpmq4Sw+5TRIDn06vwbAf+AAA) center/cover no-repeat">
               <div class="gallery__caption">Double-Height Reception</div>
             </div>
             <div class="gallery__slide">
-              <img src="assets/images/stills/lobby.jpg" alt="Ground floor reception lobby" loading="lazy">
+              <img src="assets/images/stills/lobby.jpg" alt="Ground floor reception lobby" loading="lazy" srcset="assets/images/opt/stills/lobby-480.webp 480w, assets/images/opt/stills/lobby-960.webp 960w, assets/images/opt/stills/lobby-1600.webp 1600w, assets/images/opt/stills/lobby-2400.webp 2400w" sizes="100vw" data-thumb="assets/images/opt/stills/lobby-480.webp" data-full="assets/images/opt/stills/lobby-2400.webp" decoding="async" data-lqip style="background:url(data:image/webp;base64,UklGRo4AAABXRUJQVlA4IIIAAADwAwCdASoYAAsAPwFqrU8rJiQiMAgBYCAJQBOgAxuo0toVs/cz1sT0AP7N7wFAipMz5sRRCsXVTv4gtO6UEQJJH0tlGUtIMSzztTV2e4HAEYuJiXa6gSrXvpOoIvO+4pN+gaYEUb2ZtjG72xbkjb+rebgncIFU7s4MOH+AJydAAAAA) center/cover no-repeat">
               <div class="gallery__caption">Grand Ground Lobby</div>
             </div>
             <div class="gallery__slide">
-              <img src="assets/images/stills/welcome-lifts.jpg" alt="High speed elevator lift lobby" loading="lazy">
+              <img src="assets/images/stills/welcome-lifts.jpg" alt="High speed elevator lift lobby" loading="lazy" srcset="assets/images/opt/stills/welcome-lifts-480.webp 480w, assets/images/opt/stills/welcome-lifts-960.webp 960w, assets/images/opt/stills/welcome-lifts-1600.webp 1600w, assets/images/opt/stills/welcome-lifts-2400.webp 2400w" sizes="100vw" data-thumb="assets/images/opt/stills/welcome-lifts-480.webp" data-full="assets/images/opt/stills/welcome-lifts-2400.webp" decoding="async" data-lqip style="background:url(data:image/webp;base64,UklGRoIAAABXRUJQVlA4IHYAAADQAwCdASoYAAsAPwFsrU8rJiQiMAgBYCAJYgCdABcH6ZPECcY42yAA/swbnY7cOPC9JMSfP+9nvWu/McEjOgxyHfyyuj7geAcFXrbOANcd7D9kNbBnwfkzfDdqGDe+VHDneXxC4G5seWStrhlzm0xtqZdl4AAA) center/cover no-repeat">
               <div class="gallery__caption">High-Speed Elevator Lobby</div>
             </div>
             <div class="gallery__slide">
-              <img src="assets/images/clubhouse/lounge.webp" alt="Premium resident club lounge" loading="lazy">
+              <img src="assets/images/clubhouse/lounge.webp" alt="Premium resident club lounge" loading="lazy" srcset="assets/images/opt/clubhouse/lounge-480.webp 480w, assets/images/opt/clubhouse/lounge-960.webp 960w, assets/images/opt/clubhouse/lounge-1600.webp 1600w, assets/images/opt/clubhouse/lounge-2400.webp 2400w" sizes="100vw" data-thumb="assets/images/opt/clubhouse/lounge-480.webp" data-full="assets/images/opt/clubhouse/lounge-2400.webp" decoding="async" data-lqip style="background:url(data:image/webp;base64,UklGRoQAAABXRUJQVlA4IHgAAAAwBACdASoYAA4APwFqrk6rJiQiMAgBYCAJQBOmUI4ABLO9p0HciiqWTAAAzBGGjJl+KUYlscH3SifbLvtm41KCp66VSyfvLbrDdsLjC9XQn1/fu4qNJTfX4uDUZKh8iNH7A8nkWiEksJsEh5qVQXUMydCRa7wAAAA=) center/cover no-repeat">
               <div class="gallery__caption">Premium Club Lounge</div>
             </div>
             <div class="gallery__slide">
-              <img src="assets/images/clubhouse/gym.webp" alt="State of the art fitness gym" loading="lazy">
+              <img src="assets/images/clubhouse/gym.webp" alt="State of the art fitness gym" loading="lazy" srcset="assets/images/opt/clubhouse/gym-480.webp 480w, assets/images/opt/clubhouse/gym-960.webp 960w, assets/images/opt/clubhouse/gym-1600.webp 1600w, assets/images/opt/clubhouse/gym-2400.webp 2400w" sizes="100vw" data-thumb="assets/images/opt/clubhouse/gym-480.webp" data-full="assets/images/opt/clubhouse/gym-2400.webp" decoding="async" data-lqip style="background:url(data:image/webp;base64,UklGRnoAAABXRUJQVlA4IG4AAADQAwCdASoYAA0APwFssE+rJiSiMAgBYCAJZQC+SCGrtKnCpotUoqgA/uMq74+vWMMLaJVEQfNmKlz8CgaKQE1r4QJRE1pJjWWXV8cL/arO2dnctHGYRummG8sFDv0FzW9so1RhKOO/zOLUqLAAAA==) center/cover no-repeat">
               <div class="gallery__caption">State-of-the-Art Gym</div>
             </div>
             <div class="gallery__slide">
-              <img src="assets/images/clubhouse/theatre.webp" alt="Private movie preview theatre room" loading="lazy">
+              <img src="assets/images/clubhouse/theatre.webp" alt="Private movie preview theatre room" loading="lazy" srcset="assets/images/opt/clubhouse/theatre-480.webp 480w, assets/images/opt/clubhouse/theatre-960.webp 960w, assets/images/opt/clubhouse/theatre-1600.webp 1600w, assets/images/opt/clubhouse/theatre-2400.webp 2400w" sizes="100vw" data-thumb="assets/images/opt/clubhouse/theatre-480.webp" data-full="assets/images/opt/clubhouse/theatre-2400.webp" decoding="async" data-lqip style="background:url(data:image/webp;base64,UklGRnoAAABXRUJQVlA4IG4AAAAwBACdASoYAA0APwForE6rJaQiMAgBYCAJZQCdABuPZb363LqoypQWsAAA/rxSO4wkIaBAcCVrq0c8QEyn8LPAz+TqDxfZZxzcOpJewh3+TfabKk354T2tGGeI8Psrwcx+JIJZUSNi9OXjhwAAAA==) center/cover no-repeat">
               <div class="gallery__caption">Private Preview Theatre</div>
             </div>
             <div class="gallery__slide">
-              <img src="assets/images/clubhouse/spa.webp" alt="Luxury spa massage and wellness room" loading="lazy">
+              <img src="assets/images/clubhouse/spa.webp" alt="Luxury spa massage and wellness room" loading="lazy" srcset="assets/images/opt/clubhouse/spa-480.webp 480w, assets/images/opt/clubhouse/spa-960.webp 960w, assets/images/opt/clubhouse/spa-1600.webp 1600w, assets/images/opt/clubhouse/spa-2400.webp 2400w" sizes="100vw" data-thumb="assets/images/opt/clubhouse/spa-480.webp" data-full="assets/images/opt/clubhouse/spa-2400.webp" decoding="async" data-lqip style="background:url(data:image/webp;base64,UklGRngAAABXRUJQVlA4IGwAAACwAwCdASoYAAwAPwFsrU8rJiQiMAgBYCAJZQAAXi5ZAQ00STh7AAD811MQxcFni1jKF2dX+BXkd9a1kK0ga3XcarPpek7PTeSa59PCDgYKSt9i22N09iRDVb7AEH2lrgoPG6joe5pKF8fAAAA=) center/cover no-repeat">
               <div class="gallery__caption">Luxury Spa & Treatment Room</div>
             </div>
             <div class="gallery__slide">
-              <img src="assets/images/clubhouse/indoor-games.webp" alt="Indoor board and table games pavilion" loading="lazy">
+              <img src="assets/images/clubhouse/indoor-games.webp" alt="Indoor board and table games pavilion" loading="lazy" srcset="assets/images/opt/clubhouse/indoor-games-480.webp 480w, assets/images/opt/clubhouse/indoor-games-960.webp 960w, assets/images/opt/clubhouse/indoor-games-1200.webp 1200w" sizes="100vw" data-thumb="assets/images/opt/clubhouse/indoor-games-480.webp" data-full="assets/images/opt/clubhouse/indoor-games-1200.webp" decoding="async" data-lqip style="background:url(data:image/webp;base64,UklGRowAAABXRUJQVlA4IIAAAAAQBACdASoYAA4APwFqrE6rJiQiMAgBYCAJQBOgBDXkk/Jw/jP89cU9IAD+6MkyDSxVa8iQU9MTPd29bBQmH5FbVtrBf8klwoIk+H9RLECzQNBSn94O8zzq3F2Eq38oNQb9feq2vcO6awn9WnA7sEiEmmEp9Ti2SjYrvDL4ogAAAA==) center/cover no-repeat">
               <div class="gallery__caption">Indoor Games Pavilion</div>
             </div>
             <div class="gallery__slide">
-              <img src="assets/images/clubhouse/cafe.webp" alt="Resident cafe cafeteria lounge" loading="lazy">
+              <img src="assets/images/clubhouse/cafe.webp" alt="Resident cafe cafeteria lounge" loading="lazy" srcset="assets/images/opt/clubhouse/cafe-480.webp 480w, assets/images/opt/clubhouse/cafe-960.webp 960w, assets/images/opt/clubhouse/cafe-1600.webp 1600w, assets/images/opt/clubhouse/cafe-2400.webp 2400w" sizes="100vw" data-thumb="assets/images/opt/clubhouse/cafe-480.webp" data-full="assets/images/opt/clubhouse/cafe-2400.webp" decoding="async" data-lqip style="background:url(data:image/webp;base64,UklGRpYAAABXRUJQVlA4IIoAAADQAwCdASoYAA0APwFqrU8rJiQiMAgBYCAJYwCdAdwA6xOaoKSnP4AA4C2cJZ9KgcC9Ple7Su0G93aYXpF3Xeojfjs9vb3w+WHmPZvcEMr/NwwWIBMyGSFkD4nZolSpu2aTh+fk5PNzLjVpWwp1iXxPkPo08BmosMzLAFKq7alRsI5/voT/1kiiAAA=) center/cover no-repeat">
               <div class="gallery__caption">The Resident Cafe</div>
             </div>
             <div class="gallery__slide">
-              <img src="assets/images/clubhouse/guest-room.webp" alt="Luxury resident guest suite room" loading="lazy">
+              <img src="assets/images/clubhouse/guest-room.webp" alt="Luxury resident guest suite room" loading="lazy" srcset="assets/images/opt/clubhouse/guest-room-480.webp 480w, assets/images/opt/clubhouse/guest-room-960.webp 960w, assets/images/opt/clubhouse/guest-room-1200.webp 1200w" sizes="100vw" data-thumb="assets/images/opt/clubhouse/guest-room-480.webp" data-full="assets/images/opt/clubhouse/guest-room-1200.webp" decoding="async" data-lqip style="background:url(data:image/webp;base64,UklGRn4AAABXRUJQVlA4IHIAAADwAwCdASoYAA4APwFqrU8rJiQiMAgBYCAJYwCdAB449XcF4xlCoQYAAPOwPx3cm5C2zG+eDrFhQ23qnV+TgJSd9moY5979mMB2ZTWbS8QzqEZ2hCI2E/W6aqWXfFe11woNb4YHcns9I1K8GvAXVfoAAAA=) center/cover no-repeat">
               <div class="gallery__caption">Luxury Guest Suites</div>
             </div>
             <div class="gallery__slide">
-              <img src="assets/images/clubhouse/party.webp" alt="Grand banquet party celebration hall" loading="lazy">
+              <img src="assets/images/clubhouse/party.webp" alt="Grand banquet party celebration hall" loading="lazy" srcset="assets/images/opt/clubhouse/party-480.webp 480w, assets/images/opt/clubhouse/party-960.webp 960w, assets/images/opt/clubhouse/party-1600.webp 1600w, assets/images/opt/clubhouse/party-2400.webp 2400w" sizes="100vw" data-thumb="assets/images/opt/clubhouse/party-480.webp" data-full="assets/images/opt/clubhouse/party-2400.webp" decoding="async" data-lqip style="background:url(data:image/webp;base64,UklGRogAAABXRUJQVlA4IHwAAAAwBACdASoYAA4APwFqrE6rJiQiMAgBYCAJZQC2yCFJ3WJswY131cgDx+AA/tMrfmyejfBa4I0xJAtL5LZRYrbcVmX8AYoeP2ny71KLGBcnLH6FmmmuB1kijGz6O9AX53MWV//jwLDXGUhLyamgTdR+xpZVlACt9DqQgqAA) center/cover no-repeat">
               <div class="gallery__caption">Grand Banquet Hall</div>
             </div>
             <div class="gallery__slide">
-              <img src="assets/images/gallery/27.webp" alt="Apartment private panoramic view balcony" loading="lazy">
+              <img src="assets/images/gallery/27.webp" alt="Apartment private panoramic view balcony" loading="lazy" srcset="assets/images/opt/gallery/27-480.webp 480w, assets/images/opt/gallery/27-960.webp 960w, assets/images/opt/gallery/27-1600.webp 1600w, assets/images/opt/gallery/27-2400.webp 2400w" sizes="100vw" data-thumb="assets/images/opt/gallery/27-480.webp" data-full="assets/images/opt/gallery/27-2400.webp" decoding="async" data-lqip style="background:url(data:image/webp;base64,UklGRpIAAABXRUJQVlA4IIYAAACwAwCdASoYAA4APwFqrE6rJiQiMAgBYCAJQBOgBDmq9sVRkkBzAAD+3pjUd1I5IT6rRjQcGpH9EyZP9JPRfWs2a4lK0iUZBKqRdiHrEPQz7MZb8679Rb9y/qbd9fOIlRz7+lfwAnZUPIj2J/WxyfUkwRBw3y58I3Mtd9llgIGLGCqMauAAAA==) center/cover no-repeat">
               <div class="gallery__caption">Panoramic View Balcony</div>
             </div>
             <div class="gallery__slide">
-              <img src="assets/images/tower/optimized/coworking-lobby.webp" alt="Co-working lounge within the tower" loading="lazy">
+              <img src="assets/images/tower/optimized/coworking-lobby.webp" alt="Co-working lounge within the tower" loading="lazy" srcset="assets/images/opt/tower/optimized/coworking-lobby-480.webp 480w, assets/images/opt/tower/optimized/coworking-lobby-960.webp 960w, assets/images/opt/tower/optimized/coworking-lobby-1200.webp 1200w" sizes="100vw" data-thumb="assets/images/opt/tower/optimized/coworking-lobby-480.webp" data-full="assets/images/opt/tower/optimized/coworking-lobby-1200.webp" decoding="async" data-lqip style="background:url(data:image/webp;base64,UklGRo4AAABXRUJQVlA4IIIAAABQBACdASoYAA4APwFqrE8rJaQiMAgBYCAJZQDA4agBYoL8ShbLPArQjd8AANwV7hPNmjugM0DkqRTw2DQKPVWppz12Q9c1XKK66Af2ljjZiA90o9Q4XtrXYu2fDEf51RT67ycJxopL3P54rN7z/dBHeOsETQAgwPi3+BHbXbS6CAAA) center/cover no-repeat">
               <div class="gallery__caption">Co-Working Lounge</div>
             </div>
             <div class="gallery__slide">
-              <img src="assets/images/tower/optimized/community-plaza.webp" alt="Sky community plaza" loading="lazy">
+              <img src="assets/images/tower/optimized/community-plaza.webp" alt="Sky community plaza" loading="lazy" srcset="assets/images/opt/tower/optimized/community-plaza-480.webp 480w, assets/images/opt/tower/optimized/community-plaza-500.webp 500w" sizes="100vw" data-thumb="assets/images/opt/tower/optimized/community-plaza-480.webp" data-full="assets/images/opt/tower/optimized/community-plaza-500.webp" decoding="async" data-lqip style="background:url(data:image/webp;base64,UklGRnQAAABXRUJQVlA4IGgAAAAwAwCdASoYAA0APwForE6rJaQiMAgBYCAJQBYdgF+s09LgAPcCLlF7zwwHXlFk2fAoLHUR56tPY/WMu/ceyALb9wxkRZe9FE2vaMoJiOQlvoXOsS6QzEuruj7qMsvaYLCGE8nP5YQOAA==) center/cover no-repeat">
               <div class="gallery__caption">Sky Community Plaza</div>
             </div>
             <div class="gallery__slide">
-              <img src="assets/images/tower/optimized/hobby-room.webp" alt="Residents hobby room" loading="lazy">
+              <img src="assets/images/tower/optimized/hobby-room.webp" alt="Residents hobby room" loading="lazy" srcset="assets/images/opt/tower/optimized/hobby-room-480.webp 480w, assets/images/opt/tower/optimized/hobby-room-960.webp 960w, assets/images/opt/tower/optimized/hobby-room-1200.webp 1200w" sizes="100vw" data-thumb="assets/images/opt/tower/optimized/hobby-room-480.webp" data-full="assets/images/opt/tower/optimized/hobby-room-1200.webp" decoding="async" data-lqip style="background:url(data:image/webp;base64,UklGRnwAAABXRUJQVlA4IHAAAADQAwCdASoYAA4APwFqrU8rJiQiMAgBYCAJYwCdAB5OSEDFOZhWTuAA/p+NKh96fD0Elw9H02OqLf3GXfNGtu11+5xoXzQ+a5YUGMpXUd9LV36QtSkqSRja+AdiWVMcKANVtdEBQ0B5YLRR5PzKAAAA) center/cover no-repeat">
               <div class="gallery__caption">Hobby Studio</div>
             </div>
             <div class="gallery__slide">
-              <img src="assets/images/tower/optimized/toddler-room.webp" alt="Children's toddler play room" loading="lazy">
+              <img src="assets/images/tower/optimized/toddler-room.webp" alt="Children's toddler play room" loading="lazy" srcset="assets/images/opt/tower/optimized/toddler-room-480.webp 480w, assets/images/opt/tower/optimized/toddler-room-960.webp 960w, assets/images/opt/tower/optimized/toddler-room-1200.webp 1200w" sizes="100vw" data-thumb="assets/images/opt/tower/optimized/toddler-room-480.webp" data-full="assets/images/opt/tower/optimized/toddler-room-1200.webp" decoding="async" data-lqip style="background:url(data:image/webp;base64,UklGRnAAAABXRUJQVlA4IGQAAADQAwCdASoYAA4APwFqrE6rJiQiMAgBYCAJYwCw7Ao7Lb0UlR5UQwAA8fBATfE5uGTKnegChrJnJP5DJE0HZ4p2cs17hWizvEj33hjkRO5qIPprhdDZFiuJgFwVHv/2OqQ4XAAA) center/cover no-repeat">
               <div class="gallery__caption">Toddler's Play Room</div>
             </div>
             <div class="gallery__slide">
-              <img src="assets/images/tower/optimized/elders-meeting-room.webp" alt="Elders lounge and meeting room" loading="lazy">
+              <img src="assets/images/tower/optimized/elders-meeting-room.webp" alt="Elders lounge and meeting room" loading="lazy" srcset="assets/images/opt/tower/optimized/elders-meeting-room-480.webp 480w, assets/images/opt/tower/optimized/elders-meeting-room-960.webp 960w, assets/images/opt/tower/optimized/elders-meeting-room-1200.webp 1200w" sizes="100vw" data-thumb="assets/images/opt/tower/optimized/elders-meeting-room-480.webp" data-full="assets/images/opt/tower/optimized/elders-meeting-room-1200.webp" decoding="async" data-lqip style="background:url(data:image/webp;base64,UklGRoQAAABXRUJQVlA4IHgAAABQBACdASoYAA4APwForE6rJaQiMAgBYCAJZQCsACKqwEWYs+uJQk7V7JvQAN30MLRGOg8vKShHJ+hqGGIcx7bXX3JZbbvboMFItkhTwTyvi5uaPuD7yKNKC75BZKqy587Euz83TGbt86DqueEvcdxTq9M8lySQAAA=) center/cover no-repeat">
               <div class="gallery__caption">Elders' Lounge</div>
             </div>
           </div>
@@ -845,8 +845,8 @@
         <p class="eyebrow eyebrow--center reveal">Construction update · February 2026</p>
         <h2 class="h-display h-display--center reveal">Rising, As Promised</h2>
         <div class="progress__grid">
-          <figure class="progress__card reveal"><img src="assets/images/progress/block-a.webp" alt="Tower A construction, February 2026" loading="lazy"><figcaption>Tower A</figcaption></figure>
-          <figure class="progress__card reveal d-1"><img src="assets/images/progress/block-b.webp" alt="Tower B construction, February 2026" loading="lazy"><figcaption>Tower B</figcaption></figure>
+          <figure class="progress__card reveal"><img src="assets/images/progress/block-a.webp" alt="Tower A construction, February 2026" loading="lazy" srcset="assets/images/opt/progress/block-a-480.webp 480w, assets/images/opt/progress/block-a-525.webp 525w" sizes="(min-width: 781px) 40vw, 90vw" data-thumb="assets/images/opt/progress/block-a-480.webp" data-full="assets/images/opt/progress/block-a-525.webp" decoding="async" data-lqip style="background:url(data:image/webp;base64,UklGRpoAAABXRUJQVlA4II4AAAAQBQCdASoYABoAPwFqq08rJiOiMAgBYCAJZQC7ACLKGiY0Zil7DMm3m4/81CEMUAQAAP7D3yIbnByN1++aCez0rYr4tcX2hAkDcCKhqgeJA4zweRoyyTc15thxJXJZrX4FkAOX72NBg3/NfeA2+pI1pcM/992PukEVIjQoo+Gu42YO/uQ6DRBDDNk4AAAA) center/cover no-repeat"><figcaption>Tower A</figcaption></figure>
+          <figure class="progress__card reveal d-1"><img src="assets/images/progress/block-b.webp" alt="Tower B construction, February 2026" loading="lazy" srcset="assets/images/opt/progress/block-b-480.webp 480w, assets/images/opt/progress/block-b-525.webp 525w" sizes="(min-width: 781px) 40vw, 90vw" data-thumb="assets/images/opt/progress/block-b-480.webp" data-full="assets/images/opt/progress/block-b-525.webp" decoding="async" data-lqip style="background:url(data:image/webp;base64,UklGRpIAAABXRUJQVlA4IIYAAAAQBQCdASoYABoAPwFws1IrJiSiqAqpYCAJZwAAKgIcFYT8SPVeHeFu/jWwtOLQVjoAAP7nPpNhnh6aDFLcaHGWAbb4ziyRP0vwL6u8/W2BaC1XzOR8raKtxaVXQlp4TB7eHPhXJ+ptNv7ofjdeTwEg7MbZ6DoMOP4VpMWEAiqReRPkT3kAAA==) center/cover no-repeat"><figcaption>Tower B</figcaption></figure>
         </div>
         <p class="progress__note reveal">TG RERA No. P02400006797 · Possession expected June 2028 · <a href="https://rera.telangana.gov.in/" target="_blank" rel="noopener">Verify on rera.telangana.gov.in</a></p>
       </div>
@@ -998,10 +998,10 @@
 
   <!-- ======= FLOOR PLAN SELECTOR MODAL ======= -->
   <div class="floor-modal" id="floorModal" aria-hidden="true" role="dialog" aria-modal="true" aria-labelledby="floorModalTitle">
-    <div class="floor-modal__card" role="document">
+    <div class="floor-modal__card" role="document" data-lenis-prevent>
       <button class="floor-modal__close" id="floorModalClose" aria-label="Close floor selector">&times;</button>
       <div class="floor-modal__body">
-        <div class="floor-plan-stage" id="floorPlanStage">
+        <div class="floor-plan-stage" id="floorPlanStage" data-lenis-prevent>
           <div class="floor-plan-zoom-wrapper" id="floorPlanZoomWrapper">
             <img src="" alt="" id="floorPlanImage">
             <div class="flat-hotspots" id="flatHotspots" aria-label="Clickable flat plans"></div>
@@ -1057,7 +1057,7 @@
       <div class="plan-modal__body">
         <h3 class="plan-modal__title" id="planModalTitle">Master Plan</h3>
         <div class="plan-modal__viewer">
-          <div class="plan-modal__image-wrapper" id="planModalZoomStage">
+          <div class="plan-modal__image-wrapper" id="planModalZoomStage" data-lenis-prevent>
             <div class="plan-modal__zoom-layer" id="planModalZoomLayer">
               <img src="" alt="" id="planModalImage" class="plan-modal__image">
             </div>
@@ -1069,6 +1069,21 @@
         </div>
       </div>
     </div>
+  </div>
+
+  <!-- ======= MOBILE STICKY ACTION BAR ======= -->
+  <div class="stickybar" id="stickybar" aria-label="Quick actions">
+    <div class="stickybar__price">
+      <strong>₹5.25 Cr<sup>*</sup></strong>
+      <span>Starting price</span>
+    </div>
+    <a href="tel:+917304001234" class="stickybar__icon" aria-label="Call +91 73040 01234">
+      <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
+    </a>
+    <a href="https://wa.me/917304001234?text=Hi%2C%20I%27m%20interested%20in%20Jayabheri%20The%20Pinnacle.%20Please%20share%20the%20price%20sheet." target="_blank" rel="noopener" class="stickybar__icon" aria-label="WhatsApp the team">
+      <svg viewBox="0 0 24 24" width="18" height="18" fill="currentColor"><path d="M12.04 2a9.9 9.9 0 0 0-8.5 14.94L2 22l5.2-1.5A9.9 9.9 0 1 0 12.04 2zm0 18.06a8.1 8.1 0 0 1-4.13-1.13l-.3-.18-3.08.89.86-3-.2-.31a8.14 8.14 0 1 1 6.85 3.73zm4.46-6.1c-.24-.12-1.44-.71-1.66-.79-.22-.08-.39-.12-.55.12-.16.24-.63.79-.77.95-.14.16-.28.18-.53.06-.24-.12-1.03-.38-1.96-1.21-.72-.64-1.21-1.44-1.35-1.68-.14-.24-.02-.37.11-.5.11-.11.24-.28.37-.42.12-.14.16-.24.24-.4.08-.16.04-.3-.02-.42-.06-.12-.55-1.32-.75-1.81-.2-.48-.4-.41-.55-.42h-.47c-.16 0-.42.06-.65.3-.22.24-.85.83-.85 2.03s.87 2.36 1 2.52c.12.16 1.72 2.62 4.16 3.68.58.25 1.04.4 1.39.51.58.19 1.12.16 1.54.1.47-.07 1.44-.59 1.64-1.16.2-.57.2-1.05.14-1.16-.06-.1-.22-.16-.46-.28z"/></svg>
+    </a>
+    <button class="stickybar__cta" data-open-enquiry>Enquire Now</button>
   </div>
 
   <script type="module" src="js/main.js?v=5"></script>

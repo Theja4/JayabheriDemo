@@ -1,6 +1,8 @@
 /* ============================================================
    JAYABHERI THE PINNACLE — interactions
    ============================================================ */
+import Lenis from "./vendor/lenis.mjs";
+
 (() => {
   "use strict";
 
@@ -9,6 +11,33 @@
   const clamp = (v, a, b) => Math.min(Math.max(v, a), b);
   const lerp = (a, b, t) => a + (b - a) * t;
   const reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+  /* ---------- inertial scroll: weighted, gliding wheel response ---------- */
+  if (!reduced) {
+    const lenis = new Lenis({
+      lerp: 0.075,          // low lerp = heavier, longer glide
+      wheelMultiplier: 0.9, // slightly damped wheel input
+      touchMultiplier: 1.4,
+    });
+    const rafLoop = (time) => { lenis.raf(time); requestAnimationFrame(rafLoop); };
+    requestAnimationFrame(rafLoop);
+
+    // modals/drawer lock the page via body overflow — pause Lenis with them
+    new MutationObserver(() => {
+      if (document.body.style.overflow === "hidden") lenis.stop();
+      else lenis.start();
+    }).observe(document.body, { attributes: true, attributeFilter: ["style"] });
+
+    // in-page anchors glide too (Lenis honours the sticky-nav scroll-padding-top)
+    document.addEventListener("click", (e) => {
+      const a = e.target.closest('a[href^="#"]');
+      if (!a || a.getAttribute("href").length < 2) return;
+      const target = document.querySelector(a.getAttribute("href"));
+      if (!target) return;
+      e.preventDefault();
+      lenis.scrollTo(target, { duration: 1.4 });
+    });
+  }
 
   /* ---------- mobile drawer ---------- */
   const burger = $("#navBurger");
@@ -54,6 +83,28 @@
 
   /* ---------- hero: static elevation still (Ken Burns drift via CSS) ---------- */
 
+  /* ---------- per-frame scroll handlers run only while their section is near the viewport ---------- */
+  const bindScrollWhileVisible = (el, onScroll) => {
+    let bound = false;
+    new IntersectionObserver((entries) => entries.forEach((e) => {
+      if (e.isIntersecting && !bound) {
+        bound = true;
+        window.addEventListener("scroll", onScroll, { passive: true });
+        onScroll();
+      } else if (!e.isIntersecting && bound) {
+        bound = false;
+        window.removeEventListener("scroll", onScroll);
+      }
+    }), { rootMargin: "35% 0px 35% 0px" }).observe(el);
+  };
+
+  /* ---------- blur-up placeholders: drop the LQIP once the real image is in ---------- */
+  $$("img[data-lqip]").forEach((img) => {
+    const clear = () => { img.style.backgroundImage = "none"; };
+    if (img.complete && img.naturalWidth) clear();
+    else img.addEventListener("load", clear, { once: true });
+  });
+
   /* ---------- reveal on scroll ---------- */
   const io = new IntersectionObserver(
     (entries) => entries.forEach((e) => {
@@ -86,8 +137,10 @@
       parts[0] = parts[0].replace(/\B(?=(\d{3})+(?!\d))/g, ",");
       return parts.join(".");
     };
-    const setNum = (el, v) =>
-      (el.textContent = fmt(v, parseInt(el.dataset.decimals || "0", 10), parseInt(el.dataset.pad || "0", 10)));
+    const setNum = (el, v) => {
+      const s = fmt(v, parseInt(el.dataset.decimals || "0", 10), parseInt(el.dataset.pad || "0", 10));
+      if (el.textContent !== s) el.textContent = s; // identical writes still force style/layout work
+    };
     const sub = (v, a, b) => clamp((v - a) / (b - a), 0, 1);
     const eo = (t) => 1 - Math.pow(1 - t, 3);
     const eio = (t) => (t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2);
@@ -158,7 +211,7 @@
       const onScroll = () => {
         if (!ticking) { ticking = true; requestAnimationFrame(render); }
       };
-      window.addEventListener("scroll", onScroll, { passive: true });
+      bindScrollWhileVisible(pin, onScroll);
       window.addEventListener("resize", onScroll);
       render();
     } else {
@@ -245,7 +298,7 @@
     const onScroll = () => {
       if (!ticking) { ticking = true; requestAnimationFrame(render); }
     };
-    window.addEventListener("scroll", onScroll, { passive: true });
+    bindScrollWhileVisible(section, onScroll);
     window.addEventListener("resize", onScroll);
     render();
   })();
@@ -309,17 +362,30 @@
     });
     dPlayerClose.addEventListener("click", closeDiscoverPlayer);
     dPlayer.addEventListener("click", (e) => { if (e.target === dPlayer) closeDiscoverPlayer(); });
-    // autoplay silently when it scrolls into view; button stays for sound
-    new IntersectionObserver((entries, obs) => {
+    // autoplay silently when it scrolls into view, pause when it leaves —
+    // an offscreen video otherwise keeps decoding and competes with scroll work
+    new IntersectionObserver((entries) => {
       entries.forEach((e) => {
         if (e.isIntersecting) {
           dVideo.play().then(() => setPreviewPauseIcon(false)).catch(() => {});
           dPause.hidden = false;
-          obs.disconnect();
+        } else if (!dVideo.paused) {
+          dVideo.pause();
+          setPreviewPauseIcon(true);
         }
       });
     }, { threshold: 0.45 }).observe(dVideo);
   }
+
+  /* ---------- ambient loops: stream & decode only while near the viewport ---------- */
+  $$("video[data-autoplay-visible]").forEach((v) => {
+    new IntersectionObserver((entries) => {
+      entries.forEach((e) => {
+        if (e.isIntersecting) v.play().catch(() => {});
+        else if (!v.paused) v.pause();
+      });
+    }, { rootMargin: "200px 0px" }).observe(v);
+  });
 
   /* ---------- sliders (carousel + progress line) ---------- */
   const setupSlider = (trackSel, prevSel, nextSel, progressSel) => {
@@ -388,9 +454,10 @@
         
         const img = document.createElement("img");
         const slideImg = slide.querySelector("img");
-        img.src = slideImg ? slideImg.src : "";
+        // thumbnails render ~100px wide — use the smallest variant, never the full-size source
+        img.loading = "lazy"; // must be set before src or the fetch starts immediately
+        img.src = slideImg ? (slideImg.dataset.thumb || slideImg.src) : "";
         img.alt = slideImg ? slideImg.alt : "";
-        img.loading = "lazy";
         
         thumb.appendChild(img);
         thumb.addEventListener("click", () => showSlide(idx));
@@ -877,7 +944,7 @@
     const onScroll = () => {
       if (!ticking) { ticking = true; requestAnimationFrame(render); }
     };
-    window.addEventListener("scroll", onScroll, { passive: true });
+    bindScrollWhileVisible(connect, onScroll);
     window.addEventListener("resize", onScroll);
     render();
   } else if (connect && reduced) {
@@ -914,7 +981,7 @@
     img.style.cursor = "zoom-in";
     img.addEventListener("click", () => {
       const cap = img.nextElementSibling?.textContent || "";
-      openLightbox(img.src, cap);
+      openLightbox(img.dataset.full || img.src, cap);
     });
   });
   $$(".welcome__slide").forEach((fig) => {
@@ -922,7 +989,7 @@
     if (!img) return;
     img.style.cursor = "zoom-in";
     const cap = fig.querySelector("h3")?.textContent || "";
-    img.addEventListener("click", () => openLightbox(img.src, cap));
+    img.addEventListener("click", () => openLightbox(img.dataset.full || img.src, cap));
   });
 
   /* ---------- enquiry modal ---------- */
