@@ -12,6 +12,27 @@ import Lenis from "./vendor/lenis.mjs";
   const lerp = (a, b, t) => a + (b - a) * t;
   const reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
+  /* Vite rewrites src/srcset but not custom data-thumb/data-full attributes.
+     Prefer srcset candidates (already hashed in production) over those raw paths. */
+  const srcsetUrls = (img) => {
+    const srcset = img?.getAttribute?.("srcset");
+    if (!srcset) return [];
+    return srcset
+      .split(",")
+      .map((part) => part.trim().split(/\s+/)[0])
+      .filter(Boolean);
+  };
+  const thumbSrc = (img) => {
+    if (!img) return "";
+    const urls = srcsetUrls(img);
+    return urls[0] || img.currentSrc || img.src || "";
+  };
+  const fullSrc = (img) => {
+    if (!img) return "";
+    const urls = srcsetUrls(img);
+    return urls[urls.length - 1] || img.currentSrc || img.src || "";
+  };
+
   /* ---------- inertial scroll: weighted, gliding wheel response ---------- */
   if (!reduced) {
     const lenis = new Lenis({
@@ -454,9 +475,9 @@ import Lenis from "./vendor/lenis.mjs";
         
         const img = document.createElement("img");
         const slideImg = slide.querySelector("img");
-        // thumbnails render ~100px wide — use the smallest variant, never the full-size source
+        // thumbnails render ~100px wide — use the smallest srcset candidate (Vite-rewritten)
         img.loading = "lazy"; // must be set before src or the fetch starts immediately
-        img.src = slideImg ? (slideImg.dataset.thumb || slideImg.src) : "";
+        img.src = thumbSrc(slideImg);
         img.alt = slideImg ? slideImg.alt : "";
         
         thumb.appendChild(img);
@@ -981,7 +1002,7 @@ import Lenis from "./vendor/lenis.mjs";
     img.style.cursor = "zoom-in";
     img.addEventListener("click", () => {
       const cap = img.nextElementSibling?.textContent || "";
-      openLightbox(img.dataset.full || img.src, cap);
+      openLightbox(fullSrc(img), cap);
     });
   });
   $$(".welcome__slide").forEach((fig) => {
@@ -989,7 +1010,7 @@ import Lenis from "./vendor/lenis.mjs";
     if (!img) return;
     img.style.cursor = "zoom-in";
     const cap = fig.querySelector("h3")?.textContent || "";
-    img.addEventListener("click", () => openLightbox(img.dataset.full || img.src, cap));
+    img.addEventListener("click", () => openLightbox(fullSrc(img), cap));
   });
 
   /* ---------- enquiry modal ---------- */
