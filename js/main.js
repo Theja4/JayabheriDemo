@@ -75,6 +75,8 @@ import Lenis from "./vendor/lenis.mjs";
 
   /* ---------- navbar: shrink logo, frost & adaptive light/dark ---------- */
   const nav = $("#nav");
+  const navInner = $(".nav__inner", nav);
+  const heroTitle = $(".hero__title");
   const SHRINK_RANGE = 150;
   const themedSections = $$("[data-nav-theme]").filter((el) => el !== nav);
   let navTicking = false;
@@ -82,8 +84,20 @@ import Lenis from "./vendor/lenis.mjs";
     navTicking = false;
     if (!nav) return;
     const y = window.scrollY;
-    nav.style.setProperty("--nav-shrink", clamp(y / SHRINK_RANGE, 0, 1).toFixed(3));
+    const shrink = clamp(y / SHRINK_RANGE, 0, 1);
+    nav.style.setProperty("--nav-shrink", shrink.toFixed(3));
+
+    // Begin on the hero copy's left edge, then glide into the compact nav slot.
+    if (window.matchMedia("(min-width: 1081px)").matches && navInner && heroTitle) {
+      const naturalLeft = navInner.getBoundingClientRect().left;
+      const heroLeft = heroTitle.getBoundingClientRect().left;
+      const alignedOffset = heroLeft - naturalLeft;
+      nav.style.setProperty("--nav-brand-x", `${(alignedOffset * (1 - shrink)).toFixed(2)}px`);
+    } else {
+      nav.style.setProperty("--nav-brand-x", "0px");
+    }
     nav.classList.toggle("is-scrolled", y > 4);
+    nav.classList.toggle("is-logo-settled", shrink >= 1);
     // the section crossing just below the bar decides the nav's colour theme
     const probe = (nav.offsetHeight || 64) * 0.5;
     let theme = "dark";
@@ -925,7 +939,7 @@ import Lenis from "./vendor/lenis.mjs";
     { at: 0.92, ring: "3" },
   ];
   const R_MIN = 42;
-  const R_MAX = 560;
+  const R_MAX = 720;
   const easeOut = (t) => 1 - Math.pow(1 - t, 2.2);
 
   if (connect && !reduced) {
@@ -946,13 +960,14 @@ import Lenis from "./vendor/lenis.mjs";
       stops.forEach((s) => s.classList.toggle("is-on", p >= parseFloat(s.dataset.at) - 0.02));
 
       // radius grows around the project pin
-      const r = lerp(R_MIN, R_MAX, easeOut(p));
+      const radiusProgress = Math.pow(p, 1.55);
+      const r = lerp(R_MIN, R_MAX, radiusProgress);
       radiusCircle.setAttribute("r", r);
       radiusPulse.setAttribute("r", r * 0.72);
       radiusPulse.setAttribute("stroke-opacity", String(0.16 * (1 - p * 0.6)));
 
       // map eases out from a closer zoom as the radius expands
-      mapZoom.style.transform = `scale(${lerp(1.22, 1, easeOut(p))})`;
+      mapZoom.style.transform = `scale(${lerp(1.72, 1, easeOut(p))})`;
 
       // POI pills pop in ring by ring
       RINGS.forEach(({ at, ring }) => {
@@ -980,21 +995,144 @@ import Lenis from "./vendor/lenis.mjs";
   const lightbox = $("#lightbox");
   const lbImg = $("#lightboxImg");
   const lbCap = $("#lightboxCap");
+  const lbStage = $(".lightbox__stage", lightbox);
+  const lbClose = $(".lightbox__close", lightbox);
+  const lbZoomIn = $("#lightboxZoomIn");
+  const lbZoomOut = $("#lightboxZoomOut");
+  const lbZoomReset = $("#lightboxZoomReset");
+  let lbScale = 1;
+  let lbX = 0;
+  let lbY = 0;
+  let lightboxReturnFocus = null;
+
+  const clampLightboxPan = () => {
+    const stageRect = lbStage.getBoundingClientRect();
+    const maxX = Math.max(0, (lbImg.offsetWidth * lbScale - stageRect.width) / 2);
+    const maxY = Math.max(0, (lbImg.offsetHeight * lbScale - stageRect.height) / 2);
+    lbX = clamp(lbX, -maxX, maxX);
+    lbY = clamp(lbY, -maxY, maxY);
+  };
+  const applyLightboxZoom = () => {
+    clampLightboxPan();
+    lbImg.style.transform = `translate3d(${lbX}px, ${lbY}px, 0) scale(${lbScale})`;
+    lbStage.classList.toggle("is-zoomed", lbScale > 1.01);
+    lbZoomReset.textContent = `${Math.round(lbScale * 100)}%`;
+  };
+  const resetLightboxZoom = () => {
+    lbScale = 1;
+    lbX = 0;
+    lbY = 0;
+    applyLightboxZoom();
+  };
+  const zoomLightboxTo = (nextScale, clientX, clientY) => {
+    const rect = lbStage.getBoundingClientRect();
+    const px = clientX - rect.left - rect.width / 2;
+    const py = clientY - rect.top - rect.height / 2;
+    const next = clamp(nextScale, 1, 5);
+    lbX = px - (px - lbX) * (next / lbScale);
+    lbY = py - (py - lbY) * (next / lbScale);
+    lbScale = next;
+    applyLightboxZoom();
+  };
+  const lightboxCentre = () => {
+    const rect = lbStage.getBoundingClientRect();
+    return [rect.left + rect.width / 2, rect.top + rect.height / 2];
+  };
   const openLightbox = (src, cap) => {
+    lightboxReturnFocus = document.activeElement;
+    resetLightboxZoom();
     lbImg.src = src;
     lbImg.alt = cap || "";
+    lbImg.onload = resetLightboxZoom;
     lbCap.textContent = cap || "";
     lightbox.classList.add("is-open");
     lightbox.setAttribute("aria-hidden", "false");
     document.body.style.overflow = "hidden";
+    setTimeout(() => lbClose.focus(), 50);
   };
   const closeLightbox = () => {
+    if (!lightbox.classList.contains("is-open")) return;
     lightbox.classList.remove("is-open");
     lightbox.setAttribute("aria-hidden", "true");
     document.body.style.overflow = "";
+    lightboxReturnFocus?.focus?.();
+    setTimeout(() => {
+      if (!lightbox.classList.contains("is-open")) {
+        lbImg.removeAttribute("src");
+        resetLightboxZoom();
+      }
+    }, 320);
   };
-  $(".lightbox__close").addEventListener("click", closeLightbox);
+  lbClose.addEventListener("click", closeLightbox);
   lightbox.addEventListener("click", (e) => { if (e.target === lightbox) closeLightbox(); });
+  lbZoomIn.addEventListener("click", () => zoomLightboxTo(lbScale * 1.5, ...lightboxCentre()));
+  lbZoomOut.addEventListener("click", () => zoomLightboxTo(lbScale / 1.5, ...lightboxCentre()));
+  lbZoomReset.addEventListener("click", resetLightboxZoom);
+  lbStage.addEventListener("wheel", (e) => {
+    e.preventDefault();
+    zoomLightboxTo(lbScale * Math.exp(-e.deltaY * .0015), e.clientX, e.clientY);
+  }, { passive: false });
+  lbStage.addEventListener("dblclick", (e) => {
+    e.preventDefault();
+    if (lbScale > 1.01) resetLightboxZoom();
+    else zoomLightboxTo(2.5, e.clientX, e.clientY);
+  });
+
+  const lbPointers = new Map();
+  let lbPanStart = null;
+  let lbPinchDistance = 0;
+  lbStage.addEventListener("pointerdown", (e) => {
+    lbStage.setPointerCapture(e.pointerId);
+    lbPointers.set(e.pointerId, { x: e.clientX, y: e.clientY });
+    if (lbPointers.size === 1) {
+      lbPanStart = { x: e.clientX, y: e.clientY, tx: lbX, ty: lbY };
+      if (lbScale > 1.01) lbStage.classList.add("is-panning");
+    } else if (lbPointers.size === 2) {
+      const points = [...lbPointers.values()];
+      lbPinchDistance = Math.hypot(points[0].x - points[1].x, points[0].y - points[1].y);
+      lbPanStart = null;
+    }
+  });
+  lbStage.addEventListener("pointermove", (e) => {
+    if (!lbPointers.has(e.pointerId)) return;
+    lbPointers.set(e.pointerId, { x: e.clientX, y: e.clientY });
+    if (lbPointers.size >= 2) {
+      const points = [...lbPointers.values()];
+      const distance = Math.hypot(points[0].x - points[1].x, points[0].y - points[1].y);
+      if (lbPinchDistance) {
+        zoomLightboxTo(lbScale * (distance / lbPinchDistance), (points[0].x + points[1].x) / 2, (points[0].y + points[1].y) / 2);
+      }
+      lbPinchDistance = distance;
+    } else if (lbPanStart && lbScale > 1.01) {
+      lbX = lbPanStart.tx + e.clientX - lbPanStart.x;
+      lbY = lbPanStart.ty + e.clientY - lbPanStart.y;
+      applyLightboxZoom();
+    }
+  });
+  const endLightboxPointer = (e) => {
+    lbPointers.delete(e.pointerId);
+    if (lbPointers.size < 2) lbPinchDistance = 0;
+    if (!lbPointers.size) {
+      lbPanStart = null;
+      lbStage.classList.remove("is-panning");
+    } else {
+      const point = [...lbPointers.values()][0];
+      lbPanStart = { x: point.x, y: point.y, tx: lbX, ty: lbY };
+    }
+  };
+  lbStage.addEventListener("pointerup", endLightboxPointer);
+  lbStage.addEventListener("pointercancel", endLightboxPointer);
+  window.addEventListener("resize", applyLightboxZoom, { passive: true });
+
+  const locationAerialLink = $("[data-location-aerial]");
+  if (locationAerialLink) {
+    const aerialFullSrc = new URL("../assets/images/location/project-aerial-full.webp", import.meta.url).href;
+    locationAerialLink.href = aerialFullSrc;
+    locationAerialLink.addEventListener("click", (e) => {
+      e.preventDefault();
+      openLightbox(aerialFullSrc, "The Pinnacle and its Hyderabad landmarks");
+    });
+  }
   $$("[data-lightbox-src]").forEach((btn) =>
     btn.addEventListener("click", () => openLightbox(btn.dataset.lightboxSrc, btn.dataset.lightboxCap))
   );
