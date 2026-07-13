@@ -37,7 +37,13 @@ await sharp(input)
 
 const meta = await sharp(input).metadata();
 const mobileCropWidth = Math.min(900, meta.width);
-const mobileLeft = Math.max(0, Math.round((meta.width - mobileCropWidth) / 2));
+// The towers sit right of the source image's geometric centre. Use their visual
+// centre as the mobile focal point so both towers get equal breathing room.
+const mobileFocalX = Math.round(meta.width * 0.563);
+const mobileLeft = Math.max(
+  0,
+  Math.min(meta.width - mobileCropWidth, mobileFocalX - Math.round(mobileCropWidth / 2)),
+);
 const mobileSource = sharp(input).extract({
   left: mobileLeft,
   top: 0,

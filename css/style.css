@@ -269,6 +269,13 @@ button { font-family: inherit; cursor: pointer; }
   /* no backdrop-filter: behind a 94%-opaque fill it is imperceptible,
      but it costs a blur pass on every mobile scroll frame */
   border-top: 1px solid rgba(255, 255, 255, .1);
+  transition: transform .3s var(--ease), opacity .2s ease, visibility .3s;
+}
+.stickybar.is-hidden {
+  transform: translateY(100%);
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
 }
 .stickybar__price { display: grid; gap: 1px; margin-right: auto; line-height: 1.25; }
 .stickybar__price strong {
@@ -296,8 +303,6 @@ button { font-family: inherit; cursor: pointer; }
 }
 @media (max-width: 860px) {
   .stickybar { display: flex; }
-  /* keep the last of the footer reachable above the fixed bar */
-  .footer { padding-bottom: 76px; }
 }
 
 /* ---------- hero (reference format) ---------- */
@@ -3190,6 +3195,13 @@ body { letter-spacing: .002em; }
    The content is positioned by viewport shape, not width alone.
    ============================================================ */
 .hero {
+  /* The tower artwork occupies roughly the middle 40% of the 16:9 source.
+     Keep desktop copy in the two calm side zones instead of centring it in a
+     fixed-width wrapper (which pulled the copy inward on large displays). */
+  --hero-left-inset: clamp(42px, 5vw, 128px);
+  --hero-right-inset: clamp(42px, 4vw, 104px);
+  --hero-left-safe-edge: 37.25vw;
+  --hero-right-safe-edge: 76.75vw;
   min-height: min(920px, 100svh);
 }
 
@@ -3198,18 +3210,24 @@ body { letter-spacing: .002em; }
 }
 
 .hero__inner {
-  width: min(1400px, 95vw);
+  width: 100%;
   inset-inline: 0;
-  padding: clamp(126px, 15vh, 180px) 0 clamp(155px, 18vh, 220px);
+  padding:
+    clamp(126px, 15vh, 180px)
+    var(--hero-right-inset)
+    clamp(155px, 18vh, 220px);
+  padding-left: var(--hero-left-inset);
   align-items: center;
 }
 
 .hero__col--left {
-  max-width: min(520px, 34vw);
+  width: min(600px, calc(var(--hero-left-safe-edge) - var(--hero-left-inset)));
+  max-width: none;
 }
 
 .hero__col--right {
-  min-width: min(350px, 25vw);
+  width: min(360px, calc(100vw - var(--hero-right-safe-edge) - var(--hero-right-inset)));
+  min-width: 0;
   padding: 24px 0 22px 28px;
   border-left: 1px solid rgba(255, 255, 255, .28);
 }
@@ -3250,11 +3268,46 @@ body { letter-spacing: .002em; }
   background: #d6bb7a;
 }
 
+.hero__note {
+  font-size: clamp(21px, 1.8vw, 32px);
+  line-height: 1.25;
+  letter-spacing: .04em;
+  white-space: nowrap;
+}
+
 .hero__explore {
   bottom: clamp(30px, 4.5vh, 52px);
   min-width: 350px;
   justify-content: center;
   padding-block: 17px;
+}
+
+/* A taller desktop viewport crops the sides of the 16:9 artwork, so the tower
+   clear zone grows outward with the aspect ratio instead of relying on width. */
+@media (min-width: 1081px) and (max-aspect-ratio: 8 / 5) {
+  .hero {
+    --hero-left-safe-edge: 35.5vw;
+    --hero-right-safe-edge: 79.5vw;
+  }
+
+  .hero__note {
+    font-size: clamp(19px, 1.55vw, 24px);
+    line-height: 1.25;
+    letter-spacing: .03em;
+    white-space: normal;
+  }
+}
+
+@media (min-width: 1081px) and (max-aspect-ratio: 3 / 2) {
+  .hero {
+    --hero-left-safe-edge: 34vw;
+    --hero-right-safe-edge: 82vw;
+  }
+
+  .hero__col--right { padding-left: clamp(16px, 1.7vw, 28px); }
+  .hero__figs { gap: clamp(20px, 2.5vw, 36px); }
+  .hero__fig-num { font-size: clamp(38px, 4.2vw, 62px); }
+  .hero__note { font-size: clamp(17px, 1.45vw, 22px); }
 }
 
 /* Short desktop windows: keep the message clear of the buildings and footer CTA. */
@@ -3351,12 +3404,58 @@ body { letter-spacing: .002em; }
 
   .hero {
     min-height: 560px;
+    /* Match the mobile still's dusk sky, then provide a calm dark band for copy. */
+    background: linear-gradient(180deg,
+      #1e2856 0%,
+      #202d61 24%,
+      #151b37 63%,
+      #080a16 78%,
+      #04060d 100%);
+  }
+  .hero__media {
+    overflow: hidden;
+  }
+  .hero__media::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    z-index: 2;
+    pointer-events: none;
+    background: linear-gradient(180deg,
+      transparent 0 60%,
+      rgba(5, 7, 15, .25) 68%,
+      rgba(4, 6, 13, .88) 78%,
+      #04060d 86% 100%);
+  }
+  .hero__poster--tall {
+    top: 18svh;
+    left: -4%;
+    right: auto;
+    bottom: auto;
+    width: 108%;
+    height: auto;
+    max-width: none;
+    object-fit: fill;
+    object-position: center top;
+    transform: none;
+    transform-origin: center top;
+    -webkit-mask-image: linear-gradient(to bottom,
+      transparent 0%,
+      #000 10%,
+      #000 84%,
+      transparent 100%);
+    mask-image: linear-gradient(to bottom,
+      transparent 0%,
+      #000 10%,
+      #000 84%,
+      transparent 100%);
   }
   .hero__inner {
+    justify-content: flex-end;
     padding:
-      clamp(132px, 20vh, 175px)
+      132px
       max(26px, 7vw)
-      calc(clamp(132px, 16vh, 150px) + env(safe-area-inset-bottom));
+      calc(106px + env(safe-area-inset-bottom));
   }
   .hero__title {
     width: 100%;
@@ -3384,11 +3483,10 @@ body { letter-spacing: .002em; }
 /* Very tall phones: show more of the towers while keeping copy in the calm lower sky. */
 @media (max-width: 640px) and (max-aspect-ratio: 3 / 5) {
   .hero__poster--tall {
-    transform: scale(1.12);
-    transform-origin: 50% 48%;
+    top: 17svh;
   }
   .hero__inner {
-    padding-bottom: calc(140px + env(safe-area-inset-bottom));
+    padding-bottom: calc(112px + env(safe-area-inset-bottom));
   }
 }
 

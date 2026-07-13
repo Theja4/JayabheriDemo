@@ -116,6 +116,20 @@ import Lenis from "./vendor/lenis.mjs";
   window.addEventListener("resize", () => window.requestAnimationFrame(updateNavState), { passive: true });
   updateNavState();
 
+  /* ---------- mobile sticky action bar: clear the footer ---------- */
+  const stickybar = $("#stickybar");
+  const footer = $(".footer");
+  if (stickybar && footer) {
+    const setStickybarHidden = (hidden) => {
+      stickybar.classList.toggle("is-hidden", hidden);
+      stickybar.setAttribute("aria-hidden", String(hidden));
+    };
+
+    new IntersectionObserver(([entry]) => {
+      setStickybarHidden(entry.isIntersecting);
+    }, { threshold: 0 }).observe(footer);
+  }
+
   /* ---------- hero: static elevation still (Ken Burns drift via CSS) ---------- */
 
   /* ---------- per-frame scroll handlers run only while their section is near the viewport ---------- */
