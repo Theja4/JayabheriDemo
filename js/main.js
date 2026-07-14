@@ -81,8 +81,9 @@ import Lenis from "./vendor/lenis.mjs";
   const SHRINK_RANGE = 150;
   const themedSections = $$("[data-nav-theme]").filter((el) => el !== nav);
   let navTicking = false;
-  // auto-hide: reveal on upward scroll, tuck away on downward scroll (past the reveal zone)
+  // auto-hide (mobile/tablet only): reveal on upward scroll, tuck away on downward scroll
   const NAV_REVEAL_ZONE = 240; // always visible while within this of the top
+  const navAutoHideMQ = window.matchMedia("(max-width: 1080px)");
   let lastNavY = window.scrollY;
   const updateNavState = () => {
     navTicking = false;
@@ -91,9 +92,9 @@ import Lenis from "./vendor/lenis.mjs";
     const shrink = clamp(y / SHRINK_RANGE, 0, 1);
     nav.style.setProperty("--nav-shrink", shrink.toFixed(3));
 
-    // Direction-aware visibility — matches how polished sites free up screen while reading down.
+    // Direction-aware visibility (mobile/tablet only) — frees up screen while reading down.
     const delta = y - lastNavY;
-    if (y <= NAV_REVEAL_ZONE || drawer.classList.contains("is-open")) {
+    if (!navAutoHideMQ.matches || y <= NAV_REVEAL_ZONE || drawer.classList.contains("is-open")) {
       nav.classList.remove("is-peek-hidden");
     } else if (delta > 4) {
       nav.classList.add("is-peek-hidden");
