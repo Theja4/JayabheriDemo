@@ -69,6 +69,7 @@ import Lenis from "./vendor/lenis.mjs";
     burger.setAttribute("aria-expanded", String(open));
     drawer.setAttribute("aria-hidden", String(!open));
     document.body.style.overflow = open ? "hidden" : "";
+    if (open) nav.classList.remove("is-peek-hidden");
   };
   burger.addEventListener("click", () => setDrawer(!drawer.classList.contains("is-open")));
   $$(".drawer a, .drawer button").forEach((el) => el.addEventListener("click", () => setDrawer(false)));
@@ -80,12 +81,26 @@ import Lenis from "./vendor/lenis.mjs";
   const SHRINK_RANGE = 150;
   const themedSections = $$("[data-nav-theme]").filter((el) => el !== nav);
   let navTicking = false;
+  // auto-hide: reveal on upward scroll, tuck away on downward scroll (past the reveal zone)
+  const NAV_REVEAL_ZONE = 240; // always visible while within this of the top
+  let lastNavY = window.scrollY;
   const updateNavState = () => {
     navTicking = false;
     if (!nav) return;
     const y = window.scrollY;
     const shrink = clamp(y / SHRINK_RANGE, 0, 1);
     nav.style.setProperty("--nav-shrink", shrink.toFixed(3));
+
+    // Direction-aware visibility — matches how polished sites free up screen while reading down.
+    const delta = y - lastNavY;
+    if (y <= NAV_REVEAL_ZONE || drawer.classList.contains("is-open")) {
+      nav.classList.remove("is-peek-hidden");
+    } else if (delta > 4) {
+      nav.classList.add("is-peek-hidden");
+    } else if (delta < -4) {
+      nav.classList.remove("is-peek-hidden");
+    }
+    lastNavY = y;
 
     // Begin on the hero copy's left edge, then glide into the compact nav slot.
     if (window.matchMedia("(min-width: 1081px)").matches && navInner && heroTitle) {

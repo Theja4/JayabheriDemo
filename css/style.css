@@ -178,8 +178,10 @@ button { font-family: inherit; cursor: pointer; }
   box-shadow: var(--nav-shadow);
   /* no backdrop-filter here: the scrolled background is opaque and the top-of-page
      background is transparent, so a blur pass would run every frame yet never show */
-  transition: background .45s var(--ease-lux), color .45s var(--ease-lux), border-color .45s var(--ease-lux), box-shadow .45s var(--ease-lux);
+  transition: background .45s var(--ease-lux), color .45s var(--ease-lux), border-color .45s var(--ease-lux), box-shadow .45s var(--ease-lux), transform .5s var(--ease-lux);
 }
+/* auto-hide: slip the bar out of view on downward scroll, glide it back on upward scroll */
+.nav.is-peek-hidden { transform: translateY(calc(-100% - 48px)); }
 .nav[data-nav-theme="dark"] { --nav-fg: #16160f; }
 .nav.is-logo-settled[data-nav-theme="light"] {
   --nav-bg: #060606;
@@ -2642,6 +2644,8 @@ button { font-family: inherit; cursor: pointer; }
 .times__num { font-family: var(--font-display); font-size: clamp(22px, 2.6vw, 32px); color: var(--black); letter-spacing: .04em; }
 .times__unit { font-size: 11px; letter-spacing: .3em; text-transform: uppercase; color: var(--gold); margin-left: 7px; }
 .times__list p { margin: 6px 0 0; font-size: 13.5px; color: var(--gray); letter-spacing: .04em; }
+/* Neopolis stat: surfaced only in the stacked mobile list (desktop already marks it on the map) */
+.times__np { display: none; }
 
 /* ---------- progress ---------- */
 .progress { padding: clamp(70px, 9vw, 110px) 0; }
@@ -3011,6 +3015,7 @@ body { letter-spacing: .002em; }
   .form__row { grid-template-columns: 1fr; }
   .times__list { grid-template-columns: 1fr 1fr; }
   .times__list li { border-left: 0; }
+  .times__np { display: block; order: -1; } /* nearest neighbourhood leads the list on mobile */
   .am-icons { padding: 26px 8px; gap: 18px; }
   .select { min-height: 72vh; }
   .nav__cta { display: none; }
@@ -3327,17 +3332,21 @@ body { letter-spacing: .002em; }
     width: calc(100% - clamp(40px, 8vw, 80px));
     height: 112px;
     justify-content: flex-end;
+    /* mobile shrinks via the is-scrolled toggle, so ease the size change instead of snapping it */
+    transition: height .55s var(--ease-lux);
   }
   .nav__brand {
     position: absolute;
     left: 50%;
     top: clamp(28px, 4.2vh, 42px);
     transform: translateX(-50%);
+    transition: top .55s var(--ease-lux);
   }
   .nav__brand .nav__logo {
     width: clamp(210px, 27vw, 292px);
     height: auto;
     margin-top: 0;
+    transition: width .55s var(--ease-lux), opacity .45s var(--ease-lux);
   }
   .nav.is-scrolled .nav__inner { height: var(--nav-h); }
   .nav.is-scrolled .nav__brand { top: 7px; }
@@ -3400,7 +3409,7 @@ body { letter-spacing: .002em; }
   }
   .nav__brand { top: max(32px, calc(env(safe-area-inset-top) + 18px)); }
   .nav__brand .nav__logo { width: clamp(178px, 43vw, 272px); height: auto; }
-  .nav__burger { position: absolute; right: 0; top: 36px; }
+  .nav__burger { position: absolute; right: 0; top: 50%; transform: translateY(-50%); }
 
   .hero {
     min-height: 560px;
