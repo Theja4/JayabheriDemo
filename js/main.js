@@ -961,6 +961,9 @@ import Lenis from "./vendor/lenis.mjs";
   const radiusCircle = $("#radiusCircle");
   const radiusPulse = $("#radiusPulse");
   const mapZoom = $("#mapZoom");
+  const mapSvg = $("#mapSvg");
+  const mapStatusKicker = $("#mapStatusKicker");
+  const mapStatusLabel = $("#mapStatusLabel");
   const pois = $$(".poi");
 
   const RINGS = [
@@ -971,6 +974,17 @@ import Lenis from "./vendor/lenis.mjs";
   const R_MIN = 42;
   const R_MAX = 720;
   const easeOut = (t) => 1 - Math.pow(1 - t, 2.2);
+  const JOURNEY_STAGES = [
+    { at: 0, kicker: "Your address", label: "The Pinnacle" },
+    { at: 0.3, kicker: "Within 5 minutes", label: "Financial District" },
+    { at: 0.62, kicker: "Within 15 minutes", label: "Gachibowli & HITEC City" },
+    { at: 0.92, kicker: "Within 30 minutes", label: "Hyderabad within reach" },
+  ];
+  const isCompactMap = () => window.matchMedia("(max-width: 640px)").matches;
+  const setMapViewport = () => {
+    mapSvg.setAttribute("viewBox", isCompactMap() ? "390 70 680 650" : "0 70 1440 540");
+  };
+  setMapViewport();
 
   if (connect && !reduced) {
     let ticking = false;
@@ -981,7 +995,7 @@ import Lenis from "./vendor/lenis.mjs";
       const p = clamp(-rect.top / range, 0, 1);
 
       // car travels the timeline; the covered stretch fills in
-      const carW = 56;
+      const carW = car.getBoundingClientRect().width;
       const travel = timelineEl.clientWidth - carW;
       car.style.transform = `translateX(${travel * p}px)`;
       timelineFill.style.width = `${p * 100}%`;
@@ -997,7 +1011,13 @@ import Lenis from "./vendor/lenis.mjs";
       radiusPulse.setAttribute("stroke-opacity", String(0.16 * (1 - p * 0.6)));
 
       // map eases out from a closer zoom as the radius expands
-      mapZoom.style.transform = `scale(${lerp(1.72, 1, easeOut(p))})`;
+      const startScale = isCompactMap() ? 1.28 : 1.72;
+      mapZoom.style.transform = `scale(${lerp(startScale, 1, easeOut(p))})`;
+
+      // the map card describes the current reach without adding more map labels
+      const stage = JOURNEY_STAGES.reduce((active, item) => p >= item.at ? item : active, JOURNEY_STAGES[0]);
+      mapStatusKicker.textContent = stage.kicker;
+      mapStatusLabel.textContent = stage.label;
 
       // POI pills pop in ring by ring
       RINGS.forEach(({ at, ring }) => {
@@ -1011,7 +1031,10 @@ import Lenis from "./vendor/lenis.mjs";
       if (!ticking) { ticking = true; requestAnimationFrame(render); }
     };
     bindScrollWhileVisible(connect, onScroll);
-    window.addEventListener("resize", onScroll);
+    window.addEventListener("resize", () => {
+      setMapViewport();
+      onScroll();
+    });
     render();
   } else if (connect && reduced) {
     // static fallback: everything visible
@@ -1019,6 +1042,8 @@ import Lenis from "./vendor/lenis.mjs";
     pois.forEach((poi) => poi.classList.add("is-on"));
     stops.forEach((s) => s.classList.add("is-on"));
     timelineFill.style.width = "100%";
+    mapStatusKicker.textContent = JOURNEY_STAGES[3].kicker;
+    mapStatusLabel.textContent = JOURNEY_STAGES[3].label;
   }
 
   /* ---------- lightbox ---------- */
@@ -1035,6 +1060,17 @@ import Lenis from "./vendor/lenis.mjs";
   let lbY = 0;
   let lightboxReturnFocus = null;
 
+  const fitLightboxImage = () => {
+    if (!lbImg.naturalWidth || !lbImg.naturalHeight) return;
+    const stageRect = lbStage.getBoundingClientRect();
+    const fitScale = Math.min(
+      stageRect.width / lbImg.naturalWidth,
+      stageRect.height / lbImg.naturalHeight,
+      1
+    );
+    lbImg.style.width = `${Math.round(lbImg.naturalWidth * fitScale)}px`;
+    lbImg.style.height = `${Math.round(lbImg.naturalHeight * fitScale)}px`;
+  };
   const clampLightboxPan = () => {
     const stageRect = lbStage.getBoundingClientRect();
     const maxX = Math.max(0, (lbImg.offsetWidth * lbScale - stageRect.width) / 2);
@@ -1047,8 +1083,11 @@ import Lenis from "./vendor/lenis.mjs";
     lbImg.style.transform = `translate3d(${lbX}px, ${lbY}px, 0) scale(${lbScale})`;
     lbStage.classList.toggle("is-zoomed", lbScale > 1.01);
     lbZoomReset.textContent = `${Math.round(lbScale * 100)}%`;
+    lbZoomOut.disabled = lbScale <= 1.001;
+    lbZoomIn.disabled = lbScale >= 4.999;
   };
   const resetLightboxZoom = () => {
+    fitLightboxImage();
     lbScale = 1;
     lbX = 0;
     lbY = 0;
@@ -1152,7 +1191,11 @@ import Lenis from "./vendor/lenis.mjs";
   };
   lbStage.addEventListener("pointerup", endLightboxPointer);
   lbStage.addEventListener("pointercancel", endLightboxPointer);
-  window.addEventListener("resize", applyLightboxZoom, { passive: true });
+  window.addEventListener("resize", () => {
+    if (!lightbox.classList.contains("is-open")) return;
+    fitLightboxImage();
+    applyLightboxZoom();
+  }, { passive: true });
 
   const locationAerialLink = $("[data-location-aerial]");
   if (locationAerialLink) {

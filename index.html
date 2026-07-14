@@ -651,10 +651,18 @@
             <h2 class="h-display h-display--center">Connected to Hyderabad</h2>
           </div>
           <div class="timeline">
-            <div class="timeline__stop is-on" data-at="0"><span>The Pinnacle</span><i></i></div>
-            <div class="timeline__stop" data-at="0.33"><span>5 Minutes</span><i></i></div>
-            <div class="timeline__stop" data-at="0.66"><span>15 Minutes</span><i></i></div>
-            <div class="timeline__stop" data-at="1"><span>30 Minutes</span><i></i></div>
+            <div class="timeline__stop is-on" data-at="0">
+              <span><small>Start</small><strong>The Pinnacle</strong></span><i></i>
+            </div>
+            <div class="timeline__stop" data-at="0.33">
+              <span><small>Drive time</small><strong>5 min</strong></span><i></i>
+            </div>
+            <div class="timeline__stop" data-at="0.66">
+              <span><small>Drive time</small><strong>15 min</strong></span><i></i>
+            </div>
+            <div class="timeline__stop" data-at="1">
+              <span><small>Drive time</small><strong>30 min</strong></span><i></i>
+            </div>
             <div class="timeline__line"><span id="timelineFill"></span></div>
             <div class="timeline__car" id="timelineCar">
               <svg viewBox="0 0 66 30" width="54" height="25">
@@ -670,6 +678,11 @@
           </div>
         </div>
         <div class="mapwrap">
+          <div class="map-status" aria-hidden="true">
+            <span id="mapStatusKicker">Your address</span>
+            <strong id="mapStatusLabel">The Pinnacle</strong>
+          </div>
+          <div class="map-coordinates" aria-hidden="true">17.4183° N&nbsp;&nbsp;·&nbsp;&nbsp;78.3389° E</div>
           <div class="map" id="mapZoom">
             <!-- Abstract map of west Hyderabad, positioned from verified Google Maps coordinates -->
             <svg id="mapSvg" viewBox="0 70 1440 540" preserveAspectRatio="xMidYMid slice" aria-label="Map showing The Pinnacle in Kokapet with drive times across Hyderabad">
